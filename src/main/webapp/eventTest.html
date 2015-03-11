@@ -25,7 +25,6 @@
 				};
 				scope.eventTerminal.on('eventA',function(e){
 					scope.aCount++;
-					scope.$apply();
 				});
 			}
 		};
@@ -35,10 +34,35 @@
 <body ng-app="exampleApp">
 	<div sp-container="Root" root="true">
 		<div sp-layout="LR" size="[10,10]">
-			<div sp-container="C_main" content-url="cr.html"></div>
-			<div sp-container="CS" >
-				<div sp-search></div>
+			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF" sp-event-channel="A,B" sp-event-bundle="{A:['*'],B:['*']}">
+				<div sp-layout="LALR" size="[3,3]">
+					<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00" test-terminal>
+						<h1>A,B</h1>
+						<p ng-bind="aCount"></p>
+						<input type="button" value="send" ng-click="sendA()"/>
+						<input type="button" value="send-B-channel" ng-click="sendBCh()"/>
+					</div>
+				</div>
 			</div>
+			<div sp-container="LCB" area="0,5,5,5" bgc="#00FF00" sp-event-channel="B" sp-event-bundle="{B:['*']}">
+				<div sp-layout="LBLRA" size="[3,3]">
+					<div sp-container="LBLA" area="0,0,*,1" bgc="#FFFF00" test-terminal>
+						<h1>B</h1>
+						<p ng-bind="aCount"></p>
+						<input type="button" value="send" ng-click="sendA()"/>
+					</div>
+				</div>
+			</div>
+			<div sp-container="LCC" area="5,5,5,5" bgc="#0000FF" sp-event-channel="A" sp-event-bundle="{A:['*']}">
+				<div sp-layout="LCLRA" show="true" size="[2,2]">
+					<div sp-container="LCLA" area="0,0,*,1" bgc="#FF00FF" test-terminal>
+						<h1>A</h1>
+						<p ng-bind="aCount"></p>
+						<input type="button" value="send" ng-click="sendA()"/>
+					</div>
+				</div>
+			</div>
+			<div sp-container="LCD" area="5,0,5,5" bgc="#FF0000"></div>
 		</div>
 	</div>
 </body>
