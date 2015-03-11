@@ -11,42 +11,42 @@
 <script src="http://10.1.41.222/cdn/angular-spider/0.0.3/js/angular-spider.min.js"></script>
 <title>Layout Test</title>
 <script type="text/javascript">
-	var app = angular.module('exampleApp',['spider']);
+	var app = angular.module('exampleApp', [ 'spider' ]);
 </script>
 </head>
 <body ng-app="exampleApp">
 	<div sp-container="Root" root="true" sp-layout-gesture swipe="['LR','LL']">
-	<div sp-layout="LL"  size="[10,10]" >
-		<div sp-container="LLCA" area="0,0,*,5" bgc="#CFAACF"></div>
-		<div sp-container="LLCB" area="0,5,*,*" bgc="#00FF00"></div>
-	</div>
-	<div sp-layout="LR" show="true" size="[10,10]" >
-		<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF">
-			<div sp-layout="LALR" size="[3,3]">
-				<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00"></div>
-			</div>
+		<div sp-layout="LL" size="[10,10]">
+			<div sp-container="LLCA" area="0,0,*,5" bgc="#CFAACF"></div>
+			<div sp-container="LLCB" area="0,5,*,*" bgc="#00FF00"></div>
 		</div>
-		<div sp-container="LCB" area="0,5,5,5" bgc="#00FF00" sp-layout-gesture swipe="['LBLRA','LBLRB','LBLRC']">
-			<div sp-layout="LBLRA"  size="[3,3]">
-				<div sp-container="LBLA" area="0,0,*,1" bgc="#FFFF00"></div>
+		<div sp-layout="LR" show="true" size="[10,10]">
+			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF">
+				<div sp-layout="LALR" size="[3,3]">
+					<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00"></div>
+				</div>
 			</div>
-			<div sp-layout="LBLRB" show="true" size="[3,3]">
-				<div sp-container="LBLB" area="0,1,*,1" bgc="#FFFF00"></div>
+			<div sp-container="LCB" area="0,5,5,5" bgc="#00FF00" sp-layout-gesture swipe="['LBLRA','LBLRB','LBLRC']">
+				<div sp-layout="LBLRA" size="[3,3]">
+					<div sp-container="LBLA" area="0,0,*,1" bgc="#FFFF00"></div>
+				</div>
+				<div sp-layout="LBLRB" show="true" size="[3,3]">
+					<div sp-container="LBLB" area="0,1,*,1" bgc="#FFFF00"></div>
+				</div>
+				<div sp-layout="LBLRC" size="[3,3]">
+					<div sp-container="LBLC" area="0,2,*,1" bgc="#FFFF00"></div>
+				</div>
 			</div>
-			<div sp-layout="LBLRC" size="[3,3]">
-				<div sp-container="LBLC" area="0,2,*,1" bgc="#FFFF00"></div>
+			<div sp-container="LCC" area="5,5,5,5" bgc="#0000FF" sp-layout-gesture swipe="['LCLRA','LCLRB']">
+				<div sp-layout="LCLRA" show="true" size="[2,2]">
+					<div sp-container="LCLA" area="0,0,*,1" bgc="#FF00FF"></div>
+				</div>
+				<div sp-layout="LCLRB" size="[2,2]">
+					<div sp-container="LCLB" area="0,1,*,1" bgc="#FF00FF"></div>
+				</div>
 			</div>
+			<div sp-container="LCD" area="5,0,5,5" bgc="#FF0000"></div>
 		</div>
-		<div sp-container="LCC" area="5,5,5,5" bgc="#0000FF" sp-layout-gesture swipe="['LCLRA','LCLRB']">
-			<div sp-layout="LCLRA" show="true" size="[2,2]">
-				<div sp-container="LCLA" area="0,0,*,1" bgc="#FF00FF"></div>
-			</div>
-			<div sp-layout="LCLRB"  size="[2,2]">
-				<div sp-container="LCLB" area="0,1,*,1" bgc="#FF00FF"></div>
-			</div>
-		</div>
-		<div sp-container="LCD" area="5,0,5,5" bgc="#FF0000"></div>
-	</div>
 	</div>
 </body>
 </html>
