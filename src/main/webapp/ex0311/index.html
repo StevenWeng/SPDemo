@@ -12,24 +12,6 @@
 <title>Layout Test</title>
 <script type="text/javascript">
 	var app = angular.module('exampleApp', [ 'spider' ]);
-	app.directive('testTerminal',['eventChannelService',function(eventChannelService){
-		return{
-			link : function(scope,element,attrs){
-				scope.eventTerminal = eventChannelService.createTerminal(scope);
-				scope.aCount = 0;
-				scope.sendA = function(){
-					scope.eventTerminal.broadcast('eventA');
-				};
-				scope.sendBCh = function(){
-					scope.eventTerminal.emitSpecificChannel('B','eventA');
-				};
-				scope.eventTerminal.on('eventA',function(e){
-					scope.aCount++;
-					scope.$apply();
-				});
-			}
-		};
-	}]);
 </script>
 </head>
 <body ng-app="exampleApp">
