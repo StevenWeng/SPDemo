@@ -9,7 +9,7 @@
 <script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
 <link rel="stylesheet" href="http://10.1.41.222/cdn/angular-spider/0.0.3/css/gesture-animate.css" />
 <script src="http://10.1.41.222/cdn/angular-spider/0.0.3/js/angular-spider.js"></script>
-<title>Layout Test</title>
+<title>Event Test</title>
 <script type="text/javascript">
 	var app = angular.module('exampleApp', [ 'spider' ]);
 	app.directive('testTerminal',['eventChannelService',function(eventChannelService){
@@ -34,7 +34,7 @@
 <body ng-app="exampleApp">
 	<div sp-container="Root" root="true">
 		<div sp-layout="LR" size="[10,10]">
-			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF" sp-event-channel="A,B" sp-event-bundle="{A:['*'],B:['*']}">
+			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF" sp-event-channel="{A:['*'],B:['*']}" >
 				<div sp-layout="LALR" size="[3,3]">
 					<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00" test-terminal>
 						<h1>A,B</h1>
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-			<div sp-container="LCB" area="0,5,5,5" bgc="#00FF00" sp-event-channel="B" sp-event-bundle="{B:['*']}">
+			<div sp-container="LCB" area="0,5,5,5" bgc="#00FF00" sp-event-channel="{B:['*']}" >
 				<div sp-layout="LBLRA" size="[3,3]">
 					<div sp-container="LBLA" area="0,0,*,1" bgc="#FFFF00" test-terminal>
 						<h1>B</h1>
@@ -53,7 +53,7 @@
 					</div>
 				</div>
 			</div>
-			<div sp-container="LCC" area="5,5,5,5" bgc="#0000FF" sp-event-channel="A" sp-event-bundle="{A:['*']}">
+			<div sp-container="LCC" area="5,5,5,5" bgc="#0000FF" sp-event-channel="{A:['*']}" >
 				<div sp-layout="LCLRA" show="true" size="[2,2]">
 					<div sp-container="LCLA" area="0,0,*,1" bgc="#FF00FF" test-terminal>
 						<h1>A</h1>
