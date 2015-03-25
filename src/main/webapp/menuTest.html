@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<link rel="stylesheet" href="http://10.1.41.222/cdn/angular-spider/0.0.3/css/gesture-animate.css" />
+<script src="http://10.1.41.222/cdn/angular-spider/0.0.3/js/angular-spider.js"></script>
+<title>Event Test</title>
+<script type="text/javascript">
+	var app = angular.module('exampleApp', [ 'spider' ]);
+	app.controller('menuCtrl',['$scope',function($scope){
+		// TODO
+		$scope.hi = function(){
+			
+		};
+	}]);
+</script>
+</head>
+<body ng-app="exampleApp">
+	<div sp-menu sp-controller="menuCtrl">
+		<input type="button" ng-click="hi()" />
+	</div>
+</body>
+</html>

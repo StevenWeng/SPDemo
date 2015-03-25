@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script data-require="jquery@1.11.0" data-semver="1.11.0" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script data-require="angular.js@1.2.28" data-semver="1.2.28" src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<link data-require="bootstrap-css@3.3.1" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<script type="text/javascript">
+	var app = angular.module('app', []);
+
+	app.controller('mainCtrl', [ '$scope', '$compile', '$element', function($scope, $compile, $element) {
+		var testTemp = '<div scope-test></div>';
+		$scope.addComp = function() {
+			var testElement = $compile(testTemp)($scope);
+			$($element).append(testElement);
+		};
+	} ]);
+
+	app.directive('scopeTest', [ '$compile', function($compile) {
+		return {
+			scope : true,
+			link : function(scope, element, attrs) {
+				scope.testData = [];
+				for (var i = 0; i < 102400; i++) {
+					scope.testData.push(new Date());
+				}
+				scope.removeSelf = function() {
+					// TODO
+					scope.$destroy();
+					$(element).detach();
+				};
+
+				scope.$on('$destroy', function() {
+					console.log('scope on $destroy');
+					scope.testData.length  = 0;
+					delete scope.testData;
+				});
+
+				var btnTemp = '<input type="button" ng-click="removeSelf()" value="remove self" />';
+				var btnElement = $compile(btnTemp)(scope);
+				$(element).append(btnElement);
+			}
+		};
+	} ]);
+</script>
+</head>
+
+<body ng-app="app">
+	<h1>Scope Life Cycle example!</h1>
+	<div ng-controller="mainCtrl">
+		<input type="button" value="add" ng-click="addComp()" />
+	</div>
+</body>
+
+</html>
