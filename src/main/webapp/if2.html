@@ -2,36 +2,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <script data-require="jquery@1.11.0" data-semver="1.11.0" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script data-require="angular.js@1.2.28" data-semver="1.2.28" src="https://code.angularjs.org/1.2.28/angular.js"></script>
 <link data-require="bootstrap-css@3.3.1" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
 <script type="text/javascript" src="js/angular-post-message.js"></script>
-<title>Iframe test</title>
+<title>IF 2</title>
 <script type="text/javascript">
 	var app = angular.module('app', [ 'ngPostMessage' ]);
-	app.controller('mainCtrl', [ '$scope', '$sce', function($scope, $sce) {
-		$scope.ifurl = $sce.trustAsResourceUrl('http://irving.twgogo.org/SPDemo/if1.html');
-		$scope.test = 'SSS';
+	app.controller('mainCtrl', [ '$scope', function($scope) {
 		$scope.messages = [];
 		$scope.$root.$on('$messageIncoming', function(event, data) {
 			$scope.messages.push(angular.fromJson(data));
 		});
-		$scope.sendMessage = function() {
-			$scope.$emit('$messageOutgoing', angular.toJson({
-				"response" : "hi"
-			}));
-		};
 	} ]);
 </script>
 </head>
-<body ng-app="app">
-	<div ng-controller="mainCtrl">
-		<span ng-bind="test"></span> <br /> <input type="button" value="send" ng-click="sendMessage()" /><br />
-		<ol>
-			<li ng-repeat="message in messages">{{message}}</li>
-		</ol>
-		<iframe ng-src="{{ifurl}}"></iframe>
-	</div>
+<body ng-app="app" ng-controller="mainCtrl">
+	<h2>I am IF 2</h2>
+	<ol>
+      <li ng-repeat="message in messages">{{message}}</li>
+    </ol>
 </body>
 </html>
