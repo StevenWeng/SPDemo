@@ -1,3 +1,45 @@
+<html>
+<head>
+<script>
+	var count = 0;
+	function sendMessage() {
+		window.parent.postMessage(JSON.stringify({
+			"greeting" : "hello world"
+		}), // A stringified message to send.
+		"*" // The intended origin, in this example we use the any origin wildcard.
+		);
+	}
+	setInterval(function() {
+		sendMessage(); // Send a message every second
+	}, 1000);
 
-<h2>I am if1</h2>
-<span ng-bind="test"></span>
+	function listener(e) {
+		if (e.origin === window.location.origin) {
+			return;
+		}
+		if (!e.data) {
+			throw new Error('Message event contains no readable data.');
+		}
+		console.log(e.data);
+		var elm = document.createElement('li');
+		elm.innerHTML = e.data;
+		var out = document.getElementById('messages');
+		out.appendChild(elm);
+	};
+
+	if (window.addEventListener) {
+		window.addEventListener("message", listener, false)
+	} else {
+		window.attachEvent("onmessage", listener)
+	}
+</script>
+</head>
+<body>
+	<p>
+		child window on different domain <a
+			href="https://gist.github.com/kylewelsby/585b3a5395c6731acc50">GitHub
+			Gist</a>
+	</p>
+	<ol id="messages"></ol>
+</body>
+</html>
