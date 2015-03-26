@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script data-require="jquery@1.11.0" data-semver="1.11.0" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script data-require="angular.js@1.2.28" data-semver="1.2.28" src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<link data-require="bootstrap-css@3.3.1" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<title>Iframe test</title>
+<script type="text/javascript">
+	var app = angular.module('app', []);
+	app.controller('mainCtrl', [ '$scope', function($scope) {
+		$scope.ifurl = 'if1.html';
+		$scope.test = 'SSS';
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<div ng-controller="mainCtrl">
+		<span ng-bind="test"></span> <br />
+		<iframe ng-src="{{ifurl}}"></iframe>
+	</div>
+</body>
+</html>

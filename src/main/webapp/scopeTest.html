@@ -35,7 +35,8 @@
 				scope.$on('$destroy', function() {
 					console.log('scope on $destroy');
 					scope.testData.length  = 0;
-					delete scope.testData;
+					scope.testData = null;
+					//delete scope.testData;
 				});
 
 				var btnTemp = '<input type="button" ng-click="removeSelf()" value="remove self" />';
