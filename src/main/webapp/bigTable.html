@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script data-require="jquery@1.11.0" data-semver="1.11.0" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script data-require="angular.js@1.2.28" data-semver="1.2.28" src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<link data-require="bootstrap-css@3.3.1" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<title>Big Table Performance Test</title>
+<style type="text/css">
+.amberLight {
+	background: black;
+}
+
+.amberLight-remove {
+	-webkit-transition: all 01s;
+	-moz-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
+}
+
+.amberLight-remove {
+	background: black;
+	opacity: 1;
+}
+
+.amberLight-remove.amberLight-remove-active {
+	background: black;
+	opacity: 0;
+}
+</style>
+<script type="text/javascript">
+	var app = angular.module('app', [ 'ngAnimate' ]);
+	app.controller('mainCtrl', [ '$scope', '$interval', function($scope, $interval) {
+		$scope.rowNum = 10;
+		$scope.colNum = 10;
+		$scope.dataset = [];
+		$scope.randerDataset = function() {
+			var newDataset = [];
+			for (var row = 0; row < $scope.rowNum; row++) {
+				var rowData = [];
+				for (var col = 0; col < $scope.colNum; col++) {
+					rowData.push(0);
+				}
+				newDataset.push(rowData);
+			}
+			$scope.dataset = newDataset;
+		};
+		var increaseData = function(row, col) {
+			$scope.dataset[row][col]++;
+		};
+		var randomUpdate = function() {
+			var ranRow = Math.floor((Math.random() * $scope.rowNum));
+			var ranCol = Math.floor((Math.random() * $scope.colNum));
+			increaseData(ranRow, ranCol);
+		};
+		var timmer;
+		$scope.updateDataset = function() {
+			timmer = $interval(function() {
+				randomUpdate();
+			}, 20);
+		};
+
+		$scope.stopUpdate = function() {
+			$interval.cancel(timmer);
+		};
+	} ]);
+	app.directive("amberLight", [ '$timeout', '$animate', function($timeout, $animate) {
+		var flash = function(element) {
+			element.addClass("amberLight");
+			$animate.removeClass(element,'amberLight');
+		};
+
+		return function(scope, element, attrs) {
+			//flash(element);
+			var wacthValue = '';
+			if (typeof (attrs["watchValue"]) != "undefined") {
+				wacthValue = attrs["watchValue"];
+			} else {
+				wacthValue = attrs["ngBind"];
+			}
+			scope.$watch(wacthValue, function(newValue, oldValue) {
+				if (newValue != oldValue) {
+					flash(element);
+				}
+			});
+		};
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<h1>Big Table Performance Test!</h1>
+	<div ng-controller="mainCtrl">
+		<p>
+			Row : <input type="text" ng-model="rowNum" />
+		</p>
+		<p>
+			Col : <input type="text" ng-model="colNum" />
+		</p>
+		<hr />
+		<p>Random update {{rowNum}} * {{colNum}} table</p>
+		<input type="button" value="rander table" ng-click="randerDataset()" /> <input type="button" value="update table" ng-click="updateDataset()" /> <input type="button" value="stop update table" ng-click="stopUpdate()" />
+		<table border="1">
+			<tr ng-repeat="row in dataset">
+				<td ng-repeat="col in row track by $index" amber-light ng-bind="col"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
