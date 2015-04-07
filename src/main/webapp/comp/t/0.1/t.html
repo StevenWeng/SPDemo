@@ -1,0 +1,11 @@
+<script type="text/javascript">
+sp$Comp.directive('cT',[function(){
+	return {
+		link : function(scope,element,attrs){
+			$(element).append('<h2>I am comp t</h2>');
+		}
+	};
+}]);
+</script>
+<!-- template start -->
+<div c-t></div>
