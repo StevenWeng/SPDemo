@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<link data-require="bootstrap-css@3.3.1" data-semver="3.3.1" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<script src="f1_bk_api/f1_bk_api.nocache.js"></script>
+<script src="http://10.1.41.222/cdn/angular-kqs/0.0.1/js/angular-kqs.js"></script>
+<style type="text/css">
+.amberLight {
+	background: yellow;
+}
+
+.amberLight-remove {
+	-webkit-transition: all 1s;
+	-moz-transition: all 1s;
+	-o-transition: all 1s;
+	transition: all 1s;
+}
+
+.amberLight-remove {
+	background: yellow;
+}
+
+.amberLight-remove.amberLight-remove-active {
+	background: white;
+}
+</style>
+<title>qoute test</title>
+<script type="text/javascript">
+	var app = angular.module('app', [ 'kqs', 'ngAnimate' ]);
+	app.controller('mainCtrl', [ '$scope', 'kqsService', 'quoteFactory', function($scope, kqsService, quoteFactory) {
+		$scope.symbolId = '2330';
+		$scope.quote = quoteFactory.createQuote10();
+		kqsService.onload(function() {
+			var listener = $scope.quote.createSubscribeListener($scope);
+
+			$scope.sub = function() {
+				kqsService.subscribe(F1Symbol.make(0x10, $scope.symbolId), listener);
+			};
+		});
+	} ]);
+
+	app.directive("amberLight", [ '$timeout', '$animate', function($timeout, $animate) {
+		var flash = function(element) {
+			element.addClass("amberLight");
+			$animate.removeClass(element, 'amberLight');
+		};
+
+		return function(scope, element, attrs) {
+			//flash(element);
+			var wacthValue = '';
+			if (typeof (attrs["watchValue"]) != "undefined") {
+				wacthValue = attrs["watchValue"];
+			} else {
+				wacthValue = attrs["ngBind"];
+			}
+			scope.$watch(wacthValue, function(newValue, oldValue) {
+				if (newValue != oldValue) {
+					flash(element);
+				}
+			});
+		};
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<h1>Quote Test!!</h1>
+	<div ng-controller="mainCtrl">
+		<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" />
+		<hr />
+		<p>id:{{symbolId}}</p>
+		<table style="width: 500px">
+			<tr>
+				<td width="20%">成交價:</td>
+				<td width="30%" amber-light ng-bind="quote.getPrice()"></td>
+				<td width="20%">成交量:</td>
+				<td width="30%" amber-light ng-bind="quote.getTtlVol()"></td>
+			</tr>
+			<tr>
+				<td width="20%">買價:</td>
+				<td width="30%" amber-light ng-bind="quote.getBidPrice()"></td>
+				<td width="20%">賣價:</td>
+				<td width="30%" amber-light ng-bind="quote.getAskPrice()"></td>
+			</tr>
+			<tr>
+				<td width="20%">昨收:</td>
+				<td width="30%" amber-light ng-bind="quote.getPreClose()"></td>
+				<td width="20%">開盤:</td>
+				<td width="30%" amber-light ng-bind="quote.getOpen()"></td>
+			</tr>
+			<tr>
+				<td width="20%">漲跌:</td>
+				<td width="30%" amber-light ng-bind="quote.getNetChange()"></td>
+				<td width="20%">漲跌幅:</td>
+				<td width="30%" amber-light ng-bind="quote.getNetChangePercent()"></td>
+			</tr>
+			<tr>
+				<td width="20%">最高:</td>
+				<td width="30%" amber-light ng-bind="quote.getHigh()"></td>
+				<td width="20%">最低:</td>
+				<td width="30%" amber-light ng-bind="quote.getLow()"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

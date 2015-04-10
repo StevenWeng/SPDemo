@@ -11,68 +11,46 @@
 <title>kqs test</title>
 <script type="text/javascript">
 	var app = angular.module('app', [ 'kqs' ]);
-	app.controller('mainCtrl', [ '$scope', 'sp$Kqs', function($scope, sp$Kqs) {
-		sp$Kqs.link($scope);
+	app.controller('mainCtrl', [ '$scope', 'kqsService', function($scope, kqsService) {
+		//kqsService.link($scope);
 		$scope.quotes = [];
 		$scope.symbolId = '2330';
-		$scope.init = function() {
-			var listener = sp$Kqs.createListener({
-				onNotifyConnected : function() {// 接收連線成功訊息
-				},
-				onNotifyDisconnected : function() {// 接收斷線訊息
-				},
+		kqsService.onload(function() {
+			var o = {
 				onNotifyCurrentStatus : function(symbol, quote) { // 指定接收即時資料的function,quote API 請參考 Java 版本的 Quote.java
 					$scope.quotes.push(quote.toString());
+					console.log(quote.getValue(125));
+					console.log(quote.getFields());
+					console.log(symbol);
 					$scope.$apply();
-				},
-				onNotifySymbolInfo : function(symbol, symbolinfo) {// 收取商品基本資料,symbolinfo API 請參考 Java 版本的 SymbolInfo.java
-					//infoTag.innerHTML = infoTag.innerHTML + "<br>" + symbolinfo.toString();
-					console.log(symbolinfo.toString());
-				},
-				onNotifyMarketStatus : function(mktstat) { // 收取市場狀態,mktstat API 請參考 Java 版本的 MktStat.java
-					//statusTag.innerHTML = mktstat.toString();
-				},
-				onNotifyRsp : function(brsp) {
-					// alert("挖哩勒 要趕快回補當日Tick & Ta Symbol=" + brsp.getSymbol().getID());
-					//cbid_tatoday = sp$Kqs.recoveryTaTradeDayMinRecord(F1Symbol.make(0x10, "2330"), TaTimeType.MIN1, listener);
-				},
-				onNotifyTaRsp : function(btarsp) {
-					// alert("挖哩勒 要趕快回補歷史Ta Symbol=" + btarsp.getSymbol().getID());
-					//cbid_tahis = sp$Kqs.recoveryTaRecord(F1Symbol.make(0x10, "2880"), TaTimeType.MIN1, listener);
-				},
-				onNotifyRecTradeDateHisData : function(symbol) {
-					// alert("挖哩勒 又什麼鬼要趕快回補當日Tick Symbol=" + symbol);
-				},
-				onRecoveryTaTradeDayMinRecords : function(_cbid, _symbol, _type, _data) {
-					// alert("挖賽 還真的回補當日TA成功lastcbid=" + cbid_tatoday + " reqcbid=" + _cbid + " symbol=" + _symbol + " type=" + _type + " 回補類型判斷=" + (TaTimeType.MIN1 == _type) + " data=" + _data);
-				},
-				onRecoveryTaRecords : function(_cbid, _symbol, _type, _data) {
-					// alert("挖賽 還真的回補歷史TA成功lastcbid=" + cbid_tahis + " reqcbid=" + _cbid + " symbol=" + _symbol + " type=" + _type + " 回補類型判斷=" + (TaTimeType.MIN1 == _type) + " data=" + _data);
-				},
-				onRecoveryTickerSet : function(_cbid, _symbol, _data) {
-					// alert("挖賽 還真的回補Tick成功lastcbid=" + cbid_tick1 + " reqcbid=" + _cbid + " symbol=" + _symbol + " data=" + _data);
 				}
-			});
+			};
+
+			console.log(o);
+			var listener = kqsService.createListener(o);
+
+			console.log(listener);
 
 			$scope.sub = function() {
-				sp$Kqs.subscribe(F1Symbol.make(0x10, $scope.symbolId), listener);
+				kqsService.subscribe(F1Symbol.make(0x10, $scope.symbolId), listener);
+				/* var listener = kqsService.subscribe(F1Symbol.make(0x10, $scope.symbolId),function(symbol, quote){
+					
+				}); */
 			};
-			$scope.info = function(){
+			$scope.info = function() {
 				var symbols = new ArrayList();
 				symbols.add(F1Symbol.make(0x10, $scope.symbolId));
-				var infos = sp$Kqs.getMutilSymbolInfo(symbols);
+				var infos = kqsService.getMutilSymbolInfo(symbols);
 				console.log(infos);
 			};
-		};
+		});
 	} ]);
 </script>
 </head>
 <body ng-app="app">
 	<h1>KQS Test!!</h1>
 	<div ng-controller="mainCtrl">
-		<input type="text" ng-model="symbolId" /> 
-		<input type="button" value="subscribe" ng-click="sub()" />
-		<input type="button" value="getInfo" ng-click="info()" />
+		<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" /> <input type="button" value="getInfo" ng-click="info()" />
 		<hr />
 		<p ng-repeat="qoute in quotes">{{qoute}}</p>
 	</div>
