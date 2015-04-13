@@ -1,10 +1,17 @@
 <script type="text/javascript">
-	sp$Comp.directive('cT', [ function() {
+	sp$Comp.directive('cT', [ 'lifeCycle',function(lifeCycle) {
 		return {
 			scope : true,
 			link : function(scope, element, attrs) {
 				var ttt = scope.attrs.ttt;
 				$(element).append('<h2>I am comp t ttt:' + ttt + ' </h2>');
+				var r = lifeCycle.getReveiver(scope);
+				r.onResume(function(){
+					console.log('ct is onResume');
+				})
+				.onPause(function(){
+					console.log('ct is onPause');
+				});
 			}
 		};
 	} ]);

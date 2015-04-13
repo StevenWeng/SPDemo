@@ -16,9 +16,16 @@
 	app.config([ 'componentManagerProvider', function(componentManagerProvider) {
 		componentManagerProvider.initByUrl('comp.json');
 	} ]);
+	app.controller('mainCtrl', [ '$scope', 'lifeCycle','$interval', function($scope, lifeCycle,$interval) {
+		var c = lifeCycle.getCommander($scope);
+		$interval(function(){
+			c.pause();
+			c.resume();
+		},1000);
+	} ]);
 </script>
 </head>
-<body ng-app="app">
+<body ng-app="app" ng-controller="mainCtrl">
 	<div sp-container="Root" root="true">
 		<div sp-layout="LL" size="[10,10]">
 			<div sp-container="LLCA" area="0,0,5,5" bgc="#CFAACF">
