@@ -33,16 +33,29 @@
 <title>qoute test</title>
 <script type="text/javascript">
 	var app = angular.module('app', [ 'kqs', 'ngAnimate' ]);
-	app.controller('mainCtrl', [ '$scope', 'kqsService', 'quoteFactory', function($scope, kqsService, quoteFactory) {
+	
+	app.controller('mainCtrl', [ '$scope', 'dataCenter', function($scope, dataCenter) {
+		var currSymbolIds = [];
 		$scope.symbolId = '2330';
-		$scope.quote = quoteFactory.createQuote10();
-		kqsService.onload(function() {
-			var listener = $scope.quote.createSubscribeListener($scope);
-
-			$scope.sub = function() {
-				kqsService.subscribe(F1Symbol.make(0x10, $scope.symbolId), listener);
-			};
-		});
+		
+		$scope.quotes = [];
+		$scope.quotes.push(dataCenter.getQuote('10', '2330'));
+		$scope.quotes.push(dataCenter.getQuote('10', '6214'));
+		currSymbolIds.push('2330');
+		currSymbolIds.push('6214');
+		
+		$scope.quoteDetail = {};
+		
+		$scope.addSymbol = function() {
+			if(currSymbolIds.indexOf($scope.symbolId) < 0){
+				$scope.quotes.push(dataCenter.getQuote('10', $scope.symbolId));
+				currSymbolIds.push($scope.symbolId);
+			}
+		};
+		
+		$scope.showDetail = function(quote){
+			$scope.quoteDetail = quote;
+		};
 	} ]);
 
 	app.directive("amberLight", [ '$timeout', '$animate', function($timeout, $animate) {
@@ -71,41 +84,106 @@
 <body ng-app="app">
 	<h1>Quote Test!!</h1>
 	<div ng-controller="mainCtrl">
-		<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" />
 		<hr />
-		<p>id:{{symbolId}}</p>
-		<table style="width: 500px">
-			<tr>
-				<td width="20%">成交價:</td>
-				<td width="30%" amber-light ng-bind="quote.getPrice()"></td>
-				<td width="20%">成交量:</td>
-				<td width="30%" amber-light ng-bind="quote.getTtlVol()"></td>
-			</tr>
-			<tr>
-				<td width="20%">買價:</td>
-				<td width="30%" amber-light ng-bind="quote.getBidPrice()"></td>
-				<td width="20%">賣價:</td>
-				<td width="30%" amber-light ng-bind="quote.getAskPrice()"></td>
-			</tr>
-			<tr>
-				<td width="20%">昨收:</td>
-				<td width="30%" amber-light ng-bind="quote.getPreClose()"></td>
-				<td width="20%">開盤:</td>
-				<td width="30%" amber-light ng-bind="quote.getOpen()"></td>
-			</tr>
-			<tr>
-				<td width="20%">漲跌:</td>
-				<td width="30%" amber-light ng-bind="quote.getNetChange()"></td>
-				<td width="20%">漲跌幅:</td>
-				<td width="30%" amber-light ng-bind="quote.getNetChangePercent()"></td>
-			</tr>
-			<tr>
-				<td width="20%">最高:</td>
-				<td width="30%" amber-light ng-bind="quote.getHigh()"></td>
-				<td width="20%">最低:</td>
-				<td width="30%" amber-light ng-bind="quote.getLow()"></td>
-			</tr>
-		</table>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6">
+					<input type="text" ng-model="symbolId" /> <input type="button" value="add symbol" ng-click="addSymbol()" />
+					<hr />
+					<table class="table table-striped">
+						<tr>
+							<th>Symbol</th>
+							<th>名稱</th>
+							<th>成交價</th>
+							<th>成交量</th>
+							<th>漲跌</th>
+							<th>漲跌幅</th>
+						</tr>
+						<tr ng-repeat="quote in quotes">
+							<td ng-bind="quote.getSymbol()"></td>
+							<td><a ng-bind="quote.getName()" href="#" ng-click="showDetail(quote)"></a></td>
+							<td amber-light ng-bind="quote.getPrice()"></td>
+							<td amber-light ng-bind="quote.getTtlVol()"></td>
+							<td amber-light ng-bind="quote.getNetChange()"></td>
+							<td amber-light ng-bind="quote.getNetChangePercent()"></td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-6">
+					<table class="table table-striped">
+						<tr>
+							<th colspan="4">行情: <span ng-bind="quoteDetail.getName()"></span></th>
+						</tr>
+						<tr>
+							<td width="20%">成交價:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getPrice()"></td>
+							<td width="20%">成交量:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getTtlVol()"></td>
+						</tr>
+						<tr>
+							<td width="20%">昨收:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getPreClose()"></td>
+							<td width="20%">開盤:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getOpen()"></td>
+						</tr>
+						<tr>
+							<td width="20%">漲跌:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getNetChange()"></td>
+							<td width="20%">漲跌幅:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getNetChangePercent()"></td>
+						</tr>
+						<tr>
+							<td width="20%">今高:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getHigh()"></td>
+							<td width="20%">今低:</td>
+							<td width="30%" amber-light ng-bind="quoteDetail.getLow()"></td>
+						</tr>
+					</table>
+					<hr />
+					<table class="table table-striped">
+						<tr>
+							<th colspan="4">五檔</th>
+						</tr>
+						<tr>
+							<th>(<span ng-bind="quoteDetail.getTtlBidVol()"></span>)</th>
+							<th>買價</th>
+							<th>賣價</th>
+							<th>(<span ng-bind="quoteDetail.getTtlAskVol()"></span>)</th>
+						</tr>
+						<tr>
+							<td ng-bind="quoteDetail.getBidVol()"></td>
+							<td ng-bind="quoteDetail.getBidPrice()"></td>
+							<td ng-bind="quoteDetail.getAskPrice()"></td>
+							<td ng-bind="quoteDetail.getAskVol()"></td>
+						</tr>
+						<tr>
+							<td ng-bind="quoteDetail.getBidVol2()"></td>
+							<td ng-bind="quoteDetail.getBidPrice2()"></td>
+							<td ng-bind="quoteDetail.getAskPrice2()"></td>
+							<td ng-bind="quoteDetail.getAskVol2()"></td>
+						</tr>
+						<tr>
+							<td ng-bind="quoteDetail.getBidVol3()"></td>
+							<td ng-bind="quoteDetail.getBidPrice3()"></td>
+							<td ng-bind="quoteDetail.getAskPrice3()"></td>
+							<td ng-bind="quoteDetail.getAskVol3()"></td>
+						</tr>
+						<tr>
+							<td ng-bind="quoteDetail.getBidVol4()"></td>
+							<td ng-bind="quoteDetail.getBidPrice4()"></td>
+							<td ng-bind="quoteDetail.getAskPrice4()"></td>
+							<td ng-bind="quoteDetail.getAskVol4()"></td>
+						</tr>
+						<tr>
+							<td ng-bind="quoteDetail.getBidVol5()"></td>
+							<td ng-bind="quoteDetail.getBidPrice5()"></td>
+							<td ng-bind="quoteDetail.getAskPrice5()"></td>
+							<td ng-bind="quoteDetail.getAskVol5()"></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
