@@ -57,7 +57,7 @@ body {
 	width: 1250px;
 	/* [disabled]float: left; */
 	background-color: rgba(0,0,0,0.75);
-	height: 512px;
+	/* height: 512px; */
 	border-top: 3px solid #FFFFFF;
 	margin-top: 12px;
 }

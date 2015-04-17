@@ -34,8 +34,9 @@
 		$scope.rowNum = 10;
 		$scope.colNum = 10;
 		$scope.dataset = [];
+		var newDataset = [];
 		$scope.randerDataset = function() {
-			var newDataset = [];
+			newDataset = [];
 			for (var row = 0; row < $scope.rowNum; row++) {
 				var rowData = [];
 				for (var col = 0; col < $scope.colNum; col++) {
@@ -46,7 +47,7 @@
 			$scope.dataset = newDataset;
 		};
 		var increaseData = function(row, col) {
-			$scope.dataset[row][col]++;
+			newDataset[row][col]++;
 		};
 		var randomUpdate = function() {
 			var ranRow = Math.floor((Math.random() * $scope.rowNum));
@@ -63,11 +64,18 @@
 		$scope.stopUpdate = function() {
 			$interval.cancel(timmer);
 		};
+
+		$scope.trunOn = function() {
+			$scope.dataset = newDataset;
+		};
+		$scope.trunOff = function() {
+			$scope.dataset = [];
+		};
 	} ]);
 	app.directive("amberLight", [ '$timeout', '$animate', function($timeout, $animate) {
 		var flash = function(element) {
 			element.addClass("amberLight");
-			$animate.removeClass(element,'amberLight');
+			$animate.removeClass(element, 'amberLight');
 		};
 
 		return function(scope, element, attrs) {
@@ -99,6 +107,9 @@
 		<hr />
 		<p>Random update {{rowNum}} * {{colNum}} table</p>
 		<input type="button" value="rander table" ng-click="randerDataset()" /> <input type="button" value="update table" ng-click="updateDataset()" /> <input type="button" value="stop update table" ng-click="stopUpdate()" />
+		<br />
+		<input type="button" value="on" ng-click="trunOn()" />
+		<input type="button" value="off" ng-click="trunOff()" />
 		<table border="1">
 			<tr ng-repeat="row in dataset">
 				<td ng-repeat="col in row track by $index" amber-light ng-bind="col"></td>

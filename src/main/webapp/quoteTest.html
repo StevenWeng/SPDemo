@@ -13,7 +13,7 @@
 <script src="http://10.1.41.222/cdn/angular-kqs/0.0.1/js/angular-kqs.js"></script>
 <style type="text/css">
 .amberLight {
-	border: 1px solid rgba(255, 255, 0, 0.75);
+	border-bottom: 1px solid rgba(255, 255, 0, 0.75);
 }
 
 .amberLight-remove {
@@ -24,11 +24,11 @@
 }
 
 .amberLight-remove {
-	border: 1px solid rgba(255, 255, 0, 0.75);
+	border-bottom: 1px solid rgba(255, 255, 0, 0.75);
 }
 
 .amberLight-remove.amberLight-remove-active {
-	border: 1px solid rgba(255, 255, 0, 0);
+	border-bottom: 1px solid rgba(22, 21, 20, 0.75);
 }
 </style>
 <title>qoute test</title>
@@ -136,9 +136,13 @@
 		<hr />
 		<div class="container TopMainMenuTAB">
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-12">
 					<input type="text" ng-model="symbolId" /> <input type="button" value="add symbol" ng-click="addSymbol()" />
 					<hr />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6">
 					<table width="100%" border="0" class="SearchList">
 						<tr>
 							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">代碼</th>
@@ -159,77 +163,77 @@
 					</table>
 				</div>
 				<div class="col-md-6">
-					<table class="table">
+					<table width="100%" border="0" class="SearchList">
 						<tr>
-							<th colspan="4">行情: <span ng-bind="quoteDetail.getName()"></span></th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f" colspan="4">行情: <span ng-bind="quoteDetail.getName()"></span></th>
 						</tr>
 						<tr>
-							<td width="20%">成交價:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getPrice()"></td>
-							<td width="20%">成交量:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getTtlVol()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">成交價:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getUpDownStatus())" ng-bind="quoteDetail.getPrice()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">成交量:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-bind="quoteDetail.getTtlVol()"></td>
 						</tr>
 						<tr>
-							<td width="20%">昨收:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getPreClose()"></td>
-							<td width="20%">開盤:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getOpen()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">昨收:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-bind="quoteDetail.getPreClose()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">開盤:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getOpen()))" ng-bind="quoteDetail.getOpen()"></td>
 						</tr>
 						<tr>
-							<td width="20%">漲跌:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getNetChange()"></td>
-							<td width="20%">漲跌幅:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getNetChangePercent()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">漲跌:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getUpDownStatus())" ng-bind="quoteDetail.getNetChange() | signConver"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">漲跌幅:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getUpDownStatus())" ng-bind="quoteDetail.getNetChangePercent() | persent | signConver"></td>
 						</tr>
 						<tr>
-							<td width="20%">今高:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getHigh()"></td>
-							<td width="20%">今低:</td>
-							<td width="30%" amber-light ng-bind="quoteDetail.getLow()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">今高:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getHigh()))" ng-bind="quoteDetail.getHigh()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">今低:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getLow()))" ng-bind="quoteDetail.getLow()"></td>
 						</tr>
 					</table>
 					<hr />
-					<table class="table">
+					<table width="100%" border="0" class="SearchList">
 						<tr>
-							<th colspan="4">五檔</th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f" colspan="4">五檔</th>
 						</tr>
 						<tr>
-							<th>(<span ng-bind="quoteDetail.getTtlBidVol()"></span>)
+							<th class="MlTitleV5tTableTr ChartTitleV5">(<span ng-bind="quoteDetail.getTtlBidVol()"></span>)
 							</th>
-							<th>買價</th>
-							<th>賣價</th>
-							<th>(<span ng-bind="quoteDetail.getTtlAskVol()"></span>)
+							<th class="MlTitleV5tTableTr ChartTitleV5">買價</th>
+							<th class="MlTitleV5tTableTr ChartTitleV5">賣價</th>
+							<th class="MlTitleV5tTableTr ChartTitleV5">(<span ng-bind="quoteDetail.getTtlAskVol()"></span>)
 							</th>
 						</tr>
 						<tr>
-							<td ng-bind="quoteDetail.getBidVol()"></td>
-							<td ng-bind="quoteDetail.getBidPrice()"></td>
-							<td ng-bind="quoteDetail.getAskPrice()"></td>
-							<td ng-bind="quoteDetail.getAskVol()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getBidVol()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getBidPrice()))" ng-bind="quoteDetail.getBidPrice()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getAskPrice()))" ng-bind="quoteDetail.getAskPrice()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getAskVol()"></td>
 						</tr>
 						<tr>
-							<td ng-bind="quoteDetail.getBidVol2()"></td>
-							<td ng-bind="quoteDetail.getBidPrice2()"></td>
-							<td ng-bind="quoteDetail.getAskPrice2()"></td>
-							<td ng-bind="quoteDetail.getAskVol2()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getBidVol2()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getBidPrice2()))" ng-bind="quoteDetail.getBidPrice2()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getAskPrice2()))" ng-bind="quoteDetail.getAskPrice2()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getAskVol2()"></td>
 						</tr>
 						<tr>
-							<td ng-bind="quoteDetail.getBidVol3()"></td>
-							<td ng-bind="quoteDetail.getBidPrice3()"></td>
-							<td ng-bind="quoteDetail.getAskPrice3()"></td>
-							<td ng-bind="quoteDetail.getAskVol3()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getBidVol3()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getBidPrice3()))" ng-bind="quoteDetail.getBidPrice3()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getAskPrice3()))" ng-bind="quoteDetail.getAskPrice3()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getAskVol3()"></td>
 						</tr>
 						<tr>
-							<td ng-bind="quoteDetail.getBidVol4()"></td>
-							<td ng-bind="quoteDetail.getBidPrice4()"></td>
-							<td ng-bind="quoteDetail.getAskPrice4()"></td>
-							<td ng-bind="quoteDetail.getAskVol4()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getBidVol4()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getBidPrice4()))" ng-bind="quoteDetail.getBidPrice4()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getAskPrice4()))" ng-bind="quoteDetail.getAskPrice4()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getAskVol4()"></td>
 						</tr>
 						<tr>
-							<td ng-bind="quoteDetail.getBidVol5()"></td>
-							<td ng-bind="quoteDetail.getBidPrice5()"></td>
-							<td ng-bind="quoteDetail.getAskPrice5()"></td>
-							<td ng-bind="quoteDetail.getAskVol5()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getBidVol5()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getBidPrice5()))" ng-bind="quoteDetail.getBidPrice5()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quoteDetail.getPriceStatus(quoteDetail.getAskPrice5()))" ng-bind="quoteDetail.getAskPrice5()"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quoteDetail.getAskVol5()"></td>
 						</tr>
 					</table>
 				</div>
