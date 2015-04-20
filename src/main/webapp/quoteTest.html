@@ -54,27 +54,38 @@
 			}
 		};
 
+		$scope.removeSymbol = function(quote) {
+			var quoteIndex = $scope.quotes.indexOf(quote);
+			var idIndex = currSymbolIds.indexOf(quote.getSymbolId());
+			$scope.quotes.splice(quoteIndex,1);
+			currSymbolIds.splice(idIndex,1);
+			if(quote.getSymbolId() == $scope.quoteDetail.getSymbolId()){
+				$scope.quoteDetail = {};
+			}
+			dataCenter.recoverQuote('10',quote.getSymbolId());
+		};
+
 		$scope.showDetail = function(quote) {
 			$scope.quoteDetail = quote;
 		};
-		
-		$scope.chooseUpDownClass = function(upDownStatus){
-			switch(upDownStatus){
-				case 'up':
-					return 'mainUpV5';
-					break;
-				case 'down':
-					return 'mainDownV5';
-					break;
-				case 'upEnd':
-					return 'mainUpV5';
-					break;
-				case 'downEnd':
-					return 'mainDownV5';
-					break;
-				default :
-					return '';
-					break;
+
+		$scope.chooseUpDownClass = function(upDownStatus) {
+			switch (upDownStatus) {
+			case 'up':
+				return 'mainUpV5';
+				break;
+			case 'down':
+				return 'mainDownV5';
+				break;
+			case 'upEnd':
+				return 'mainUpV5';
+				break;
+			case 'downEnd':
+				return 'mainDownV5';
+				break;
+			default:
+				return '';
+				break;
 			}
 		};
 	} ]);
@@ -119,9 +130,9 @@
 				if (angular.isString(numberStr) == false) {
 					numberStr = numberStr + '';
 				}
-				if (numberStr.charAt(0) == '-'){
+				if (numberStr.charAt(0) == '-') {
 					numberStr = '▼ ' + numberStr.substring(1);
-				}else {
+				} else {
 					numberStr = '▲ ' + numberStr;
 				}
 				return numberStr;
@@ -145,6 +156,7 @@
 				<div class="col-md-6">
 					<table width="100%" border="0" class="SearchList">
 						<tr>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f"></th>
 							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">代碼</th>
 							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">名稱</th>
 							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">成交價</th>
@@ -153,6 +165,7 @@
 							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">漲跌幅</th>
 						</tr>
 						<tr ng-repeat="quote in quotes">
+							<td class="MlTitleV5tTableTr ChartTitleV5"><a href="#" ng-click="removeSymbol(quote)"><span class="glyphicon glyphicon-remove"></span></a></td>
 							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="quote.getSymbol()"></td>
 							<td class="MlTitleV5tTableTr ChartTitletimeV5"><a ng-bind="quote.getName()" href="#" ng-click="showDetail(quote)"></a></td>
 							<td amber-light class="MlTitleV5tTableTr ChartTitleV5" ng-class="chooseUpDownClass(quote.getUpDownStatus())" ng-bind="quote.getPrice()"></td>
