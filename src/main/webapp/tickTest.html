@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="js/angular-vs-repeat.js"></script>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<script src="f1_bk_api/f1_bk_api.nocache.js"></script>
+<script src="http://10.1.41.222/cdn/angular-kqs/0.0.1/js/angular-kqs.js"></script>
+<title>tick test</title>
+<script type="text/javascript">
+	var app = angular.module('app', [ 'kqs', 'vs-repeat' ]);
+	app.controller('mainCtrl', [ '$scope', 'dataCenter', function($scope, dataCenter) {
+		//kqsService.link($scope);
+		$scope.tickList = [];
+		$scope.symbolId = '2330';
+		$scope.sub = function() {
+			$scope.tickList = dataCenter.getTickList('10', $scope.symbolId);
+			//for (var i = 0; i < 100; i++) {
+			//	$scope.tickList.push({
+			//		time : i
+			//	});
+			//}
+		};
+	} ]);
+</script>
+<style type="text/css">
+.repeater-container {
+	height: 454px;
+	overflow: auto;
+	box-shadow: 0 0 10px;
+	border-radius: 5px;
+	-webkit-overflow-scrolling: touch;
+}
+
+.vs-repeat-repeated-element {
+	position: static;
+	z-index: 1;
+}
+</style>
+</head>
+<body ng-app="app">
+	<div ng-controller="mainCtrl" class="container">
+		<h1>Tick list Test!!</h1>
+		<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" />
+		<hr />
+
+		<div class="row">
+			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
+				<b>時間</b>
+			</div>
+			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
+				<b>買價</b>
+			</div>
+			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
+				<b>賣價</b>
+			</div>
+			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
+				<b>成交</b>
+			</div>
+			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
+				<b>單量</b>
+			</div>
+		</div>
+		<hr />
+
+		<div vs-repeat class="repeater-container">
+			<div class="row" ng-repeat="tick in tickList.fullTicks()">
+				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.time"></div>
+				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.bid"></div>
+				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.ask"></div>
+				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.price"></div>
+				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.bitVol"></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
