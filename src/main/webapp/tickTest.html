@@ -8,22 +8,38 @@
 <script src="https://code.angularjs.org/1.2.28/angular.js"></script>
 <script src="js/angular-vs-repeat.js"></script>
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/style.css" />
 <script src="f1_bk_api/f1_bk_api.nocache.js"></script>
 <script src="http://10.1.41.222/cdn/angular-kqs/0.0.1/js/angular-kqs.js"></script>
 <title>tick test</title>
 <script type="text/javascript">
 	var app = angular.module('app', [ 'kqs', 'vs-repeat' ]);
 	app.controller('mainCtrl', [ '$scope', 'dataCenter', function($scope, dataCenter) {
-		//kqsService.link($scope);
 		$scope.tickList = [];
 		$scope.symbolId = '2330';
 		$scope.sub = function() {
 			$scope.tickList = dataCenter.getTickList('10', $scope.symbolId);
-			//for (var i = 0; i < 100; i++) {
-			//	$scope.tickList.push({
-			//		time : i
-			//	});
-			//}
+		};
+	} ]);
+	app.filter('toUpDownClass', [ function() {
+		return function(status) {
+			switch (status) {
+			case 'up':
+				return 'mainUpV5';
+				break;
+			case 'down':
+				return 'mainDownV5';
+				break;
+			case 'upEnd':
+				return 'mainUpV5';
+				break;
+			case 'downEnd':
+				return 'mainDownV5';
+				break;
+			default:
+				return '';
+				break;
+			}
 		};
 	} ]);
 </script>
@@ -43,38 +59,33 @@
 </style>
 </head>
 <body ng-app="app">
-	<div ng-controller="mainCtrl" class="container">
-		<h1>Tick list Test!!</h1>
-		<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" />
-		<hr />
+	<h1>Tick list Test!!</h1>
+	<div ng-controller="mainCtrl" class="container TopMainMenuTAB">
+		<div ng-controller="mainCtrl">
+			<input type="text" ng-model="symbolId" /> <input type="button" value="subscribe" ng-click="sub()" />
+			<hr />
 
-		<div class="row">
-			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
-				<b>時間</b>
+			<div class="row">
+				<div class="col-md-6">
+					<table width="100%" border="0" class="SearchList">
+						<tr>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">時間</th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">買價</th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">賣價</th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">成交</th>
+							<th class="MlTitleV5tTableTr" bgcolor="#1c1d1f">單量</th>
+						</tr>
+						<tr ng-repeat="tick in tickList.list() ">
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-bind="tick.time | tradeTime"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="tickList.getPriceStatus(tick.bid) | toUpDownClass" ng-bind="tick.bid"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="tickList.getPriceStatus(tick.ask) | toUpDownClass" ng-bind="tick.ask"></td>
+							<td class="MlTitleV5tTableTr ChartTitleV5" ng-class="tickList.getPriceStatus(tick.price) | toUpDownClass " ng-bind="tick.price"></td>
+							<td class="MlTitleV5tTableTr ChartTitletimeV5" ng-bind="tick.bitVol"></td>
+						</tr>
+					</table>
+				</div>
 			</div>
-			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
-				<b>買價</b>
-			</div>
-			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
-				<b>賣價</b>
-			</div>
-			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
-				<b>成交</b>
-			</div>
-			<div class="col-md-2 col-lg-2 col-xs-2 text-center">
-				<b>單量</b>
-			</div>
-		</div>
-		<hr />
 
-		<div vs-repeat class="repeater-container">
-			<div class="row" ng-repeat="tick in tickList.fullTicks()">
-				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.time"></div>
-				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.bid"></div>
-				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.ask"></div>
-				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.price"></div>
-				<div class="col-md-2 col-lg-2 col-xs-2 text-center" ng-bind="tick.bitVol"></div>
-			</div>
 		</div>
 	</div>
 </body>
