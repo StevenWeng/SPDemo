@@ -1,0 +1,19 @@
+<div sp-layout="Layout_lg" size="[12,12]">
+	<div sp-container="lg_header" area="0,0,*,78px" bgc="#000000">
+		<h1 style="color: #FFFFFF">我是大版</h1>
+	</div>
+	<div sp-container="lg_footer" area="0,-0,*,1" bgc="#00FF00">
+		<p align="center">footer</p>
+	</div>
+	<div sp-container="lg_main" area="0,78px,*,*" bgc="#FF0000">
+		<div sp-layout="Layout_lg_main" size="[12,12]">
+			<div sp-container="lg_main_left" area="0,0,3,*" bgc="#FFFF00">
+				<h2>左選單</h2>
+			</div>
+			<div sp-container="lg_main_right" area="3,0,*,*" bgc="#FF00FF" sp-controller="lifeCycleLogger">
+				<h2>主頁面</h2>
+				<h4 ng-repeat="msg in msgs">{{msg}}</h4>
+			</div>
+		</div>
+	</div>
+</div>

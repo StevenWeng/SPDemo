@@ -34,7 +34,7 @@
 <body ng-app="exampleApp">
 	<div sp-container="Root" root="true">
 		<div sp-layout="LR" size="[10,10]">
-			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF" sp-event-channel="{A:['*'],B:['*']}" >
+			<div sp-container="LCA" area="0,0,5,5" bgc="#CFAACF" sp-event-channel="{A:['*','!eventA'],B:['*']}" >
 				<div sp-layout="LALR" size="[3,3]">
 					<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00" test-terminal>
 						<h1>A,B</h1>

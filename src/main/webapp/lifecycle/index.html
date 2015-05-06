@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<link rel="stylesheet" href="http://10.1.41.222/cdn/angular-spider/0.0.5/css/gesture-animate.css" />
+<script src="http://10.1.41.222/cdn/angular-spider/0.0.5/js/angular-spider.js"></script>
+<title>Life Cycle Test</title>
+<script type="text/javascript">
+	var app = angular.module('app', [ 'spider', 'ngAnimate' ]);
+	app.controller('lifeCycleLogger', [ '$scope', 'lifeCycle', function($scope, lifeCycle) {
+		var lifeCycleReceiver = lifeCycle.getReceiver($scope);
+		$scope.msgs = [];
+
+		lifeCycleReceiver.onHide(function() {
+			$scope.msgs.push($scope.msgs.length + ': on hide.');
+			if (!$scope.$$phase) {
+				$scope.$apply();
+			}
+		});
+		lifeCycleReceiver.onShow(function() {
+			$scope.msgs.push($scope.msgs.length + ': on show.');
+			if (!$scope.$$phase) {
+				$scope.$apply();
+			}
+		});
+		lifeCycleReceiver.onResume(function() {
+			$scope.msgs.push($scope.msgs.length + ': on Resume.');
+			if (!$scope.$$phase) {
+				$scope.$apply();
+			}
+		});
+		lifeCycleReceiver.onPause(function() {
+			$scope.msgs.push($scope.msgs.length + ': on Pause.');
+			if (!$scope.$$phase) {
+				$scope.$apply();
+			}
+		});
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<div sp-container="Root" root="true" content-url="[{w:700,l:'sm.html',name:'Layout_sm'},{l:'lg.html',name:'Layout_lg'}]"></div>
+</body>
+</html>
