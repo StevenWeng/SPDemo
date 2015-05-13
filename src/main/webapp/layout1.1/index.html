@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-cookies.js"></script>
+<script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<script src="../popupMenu/draggable.js"></script>
+<script src="../popupMenu/popup-menu.js"></script>
+<link rel="stylesheet" href="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/css/gesture-animate.css" />
+<script src="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/js/angular-spider.js"></script>
+<title>Layout Test</title>
+<script type="text/javascript">
+	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu' ]);
+
+	app.config([ 'menuProvider', function(menuProvider) {
+		menuProvider.addMenu('menu1', [ {
+			text : 'A'
+		}, {
+			text : 'B'
+		}, {
+			text : 'C'
+		}, {
+			text : 'D'
+		}, {
+			text : 'E'
+		}, {
+			text : 'F'
+		} ]);
+	} ]);
+
+	app.controller('testCtrl', [ '$scope', 'eventChannelService', function($scope, eventChannelService) {
+		var eventTerminal = eventChannelService.createTerminal($scope);
+		$scope.go1 = function() {
+			eventTerminal.broadcast('changeLayout', 'sm_m_1', 'fade');
+		};
+		$scope.go2 = function() {
+			eventTerminal.broadcast('changeLayout', 'sm_m_2', 'fade');
+		};
+		$scope.zoomIn1 = function() {
+			eventTerminal.broadcast('changeLayout', 'sm_m_1', 'zoom-in');
+		};
+		$scope.zoomOut2 = function() {
+			eventTerminal.broadcast('changeLayout', 'sm_m_2', 'zoom-out');
+		};
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<div sp-container="Root" root="true" content-url="[{w:700,l:'sm.html',name:'Layout_sm'},{l:'lg.html',name:'Layout_lg'}]"></div>
+	<!-- popup menu -->
+	<div draggable>
+		<div menu-button bind-menu="menu1">
+			<img alt="" src="../popupMenu/cis_circle.png" style="width: 50px;">
+		</div>
+		<div popup-menu="menu1"></div>
+	</div>
+</body>
+</html>

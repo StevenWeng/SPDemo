@@ -210,6 +210,12 @@
 							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">金額(億):</td>
 							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-bind="quoteDetail.getTtlPriceHundredMillion()"></td>
 						</tr>
+						<tr>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">內盤:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-bind="quoteDetail.getBuyVol()"></td>
+							<td width="20%" class="MlTitleV5tTableTr ChartTitleV5">外盤:</td>
+							<td width="30%" class="MlTitleV5tTableTr ChartTitleV5" amber-light ng-bind="quoteDetail.getSellVol()"></td>
+						</tr>
 					</table>
 					<hr />
 					<table width="100%" border="0" class="SearchList">

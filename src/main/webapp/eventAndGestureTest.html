@@ -7,8 +7,8 @@
 <script src="https://code.angularjs.org/1.2.28/angular.js"></script>
 <script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
 <script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
-<link rel="stylesheet" href="http://10.1.41.222/cdn/angular-spider/0.0.3/css/gesture-animate.css" />
-<script src="http://10.1.41.222/cdn/angular-spider/0.0.3/js/angular-spider.js"></script>
+<link rel="stylesheet" href="http://10.1.41.222/cdn/angular-spider/0.1.0/css/gesture-animate.css" />
+<script src="http://10.1.41.222/cdn/angular-spider/0.1.0/js/angular-spider.js"></script>
 <title>Event and Gesture Test</title>
 <script type="text/javascript">
 	var app = angular.module('exampleApp', [ 'spider' ]);
@@ -26,10 +26,17 @@
 				};
 				var btnTemplate = '<input type="button" value="magic" class="btn" />';
 				var btnElement = $compile(btnTemplate)(scope);
-				$(btnElement).click(function(){
+				Hammer.defaults.cssProps.tapHighlightColor = '#777';
+				var mc = new Hammer(btnElement[0]);
+				mc.on('tap',function(){
 					scope.eventTerminal.broadcast('changeLayout', visibleObj, function() {
 						console.log('changeLayout to ' + targetLayoutName + ' is done.');
+						//alert('changeLayout to ' + targetLayoutName + ' is done.');
 					});
+				});
+				$(btnElement).click(function(){
+						//alert('btnElement click ');
+					
 				});
 				$(element).prepend(btnElement);
 			}
@@ -71,7 +78,7 @@
 					<div sp-container id="LALA" area="0,0,*,1" bgc="#FFFF00"></div>
 				</div>
 			</div>
-			<div sp-container="CB2" area="0,5,5,5" bgc="#00FF00"  sp-layout-gesture swipe="['L2_A_sm','L2_B_sm']">
+			<div sp-container="CB2" area="0,5,5,5" bgc="#00FF00"  sp-layout-gesture swipe="['L2_A_sm','L2_B_sm']" pinch="['L2_A_sm','L2_B_sm']">
 				<div sp-layout="L2_A_sm" size="[2,2]">
 					<div sp-container="LBLAA" area="0,0,1,*" bgc="#FFFF00" layout-change-btn="L2_A_big"></div>
 					<div sp-container="LBLAB" area="1,0,*,*" bgc="#FF00FF"></div>
@@ -81,7 +88,7 @@
 					<div sp-container="LBLBB" area="1,0,*,*" bgc="#FFFF00"></div>
 				</div>
 			</div>
-			<div sp-container="CB3" area="5,5,5,5" bgc="#0000FF" sp-layout-gesture swipe="['LCLRA','LCLRB']">
+			<div sp-container="CB3" area="5,5,5,5" bgc="#0000FF" sp-layout-gesture pinch="['LCLRA','LCLRB']">
 				<div sp-layout="LCLRA" show="true" size="[2,2]">
 					<div sp-container="LCLA" area="0,0,*,1" bgc="#FF00FF"></div>
 				</div>
