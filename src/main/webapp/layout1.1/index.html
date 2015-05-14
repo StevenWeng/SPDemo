@@ -7,6 +7,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
 <script src="https://code.angularjs.org/1.2.28/angular.js"></script>
 <script src="https://code.angularjs.org/1.2.28/angular-cookies.js"></script>
+<script src="../js/math.js"></script>
 <script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
 <script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
 <script src="../popupMenu/draggable.js"></script>
@@ -14,6 +15,50 @@
 <link rel="stylesheet" href="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/css/gesture-animate.css" />
 <script src="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/js/angular-spider.js"></script>
 <title>Layout Test</title>
+<style type="text/css">
+.menu-show {
+	opacity: 1 !important;
+}
+
+.menu-show-add,.menu-show-remove {
+	-webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	-o-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+.menu-show-add {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+}
+
+.menu-show-add.menu-show-add-active {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+}
+
+.menu-show-remove {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+}
+
+.menu-show-remove.menu-show-remove-active {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+}
+</style>
 <script type="text/javascript">
 	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu' ]);
 
@@ -41,6 +86,9 @@
 		$scope.go2 = function() {
 			eventTerminal.broadcast('changeLayout', 'sm_m_2', 'fade');
 		};
+		$scope.goB = function() {
+			eventTerminal.broadcast('changeLayout', 'la_B', 'fade');
+		};
 		$scope.zoomIn1 = function() {
 			eventTerminal.broadcast('changeLayout', 'sm_m_1', 'zoom-in');
 		};
@@ -50,13 +98,11 @@
 	} ]);
 </script>
 </head>
-<body ng-app="app">
+<body ng-app="app"  sp-controller="testCtrl">
 	<div sp-container="Root" root="true" content-url="[{w:700,l:'sm.html',name:'Layout_sm'},{l:'lg.html',name:'Layout_lg'}]"></div>
 	<!-- popup menu -->
-	<div draggable>
-		<div menu-button bind-menu="menu1">
-			<img alt="" src="../popupMenu/cis_circle.png" style="width: 50px;">
-		</div>
+	<div draggable sp-event-channel="{A:['*'],B:['*']}">
+		<img alt="" src="../popupMenu/cis_circle.png" style="width: 50px;">
 		<div popup-menu="menu1"></div>
 	</div>
 </body>

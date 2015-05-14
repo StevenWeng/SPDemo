@@ -1,7 +1,8 @@
 var draggableModule = angular.module('sp.draggable', [ 'ngCookies' ]);
 
-draggableModule.directive('draggable', [ '$cookieStore', function($cookieStore) {
+draggableModule.directive('draggable', [ '$cookieStore', '$rootScope', function($cookieStore, $rootScope) {
 	return {
+		scope : true,
 		controller : [ '$scope', '$element', function($scope, $element) {
 			$('img').on('dragstart', function(event) {
 				event.preventDefault();
@@ -17,16 +18,17 @@ draggableModule.directive('draggable', [ '$cookieStore', function($cookieStore) 
 			});
 
 			$($element).css({
-				'z-index' : 99,
+				'z-index' : 0,
 				'position' : 'fixed',
 				'top' : lastTop,
-				'left' : lastLeft
+				'left' : lastLeft,
+				'cursor' : 'pointer'
 			});
-
 			var mc = new Hammer.Manager($element[0]);
 			mc.add(new Hammer.Pan({
 				direction : Hammer.DIRECTION_ALL
 			}));
+			mc.add(new Hammer.Tap());
 			var startTop = 0;
 			var startLeft = 0;
 			var limitTop = $(window).height() - 50;
@@ -55,7 +57,7 @@ draggableModule.directive('draggable', [ '$cookieStore', function($cookieStore) 
 			});
 			mc.on('panend', function(ev) {
 				$($element).css({
-					'cursor' : 'default'
+					'cursor' : 'pointer'
 				});
 				var targetTop = startTop + ev.deltaY - (ev.velocityY * 150);
 				var targetLeft = startLeft + ev.deltaX - (ev.velocityX * 150);
@@ -67,6 +69,11 @@ draggableModule.directive('draggable', [ '$cookieStore', function($cookieStore) 
 					top : targetTop,
 					left : targetLeft
 				}, '500', 'easeOutCirc');
+			});
+			var isMenuShow = false;
+			mc.on('tap', function() {
+				isMenuShow = !isMenuShow;
+				$rootScope.$broadcast('menuSwitch', isMenuShow);
 			});
 		} ]
 	};
