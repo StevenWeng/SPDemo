@@ -1,30 +1,27 @@
 var draggableModule = angular.module('sp.draggable', [ 'ngCookies' ]);
 
-draggableModule.directive('draggable', [ '$cookieStore', '$rootScope', function($cookieStore, $rootScope) {
+draggableModule.directive('draggable', [ '$cookies', '$rootScope', function($cookies, $rootScope) {
 	return {
 		scope : true,
 		controller : [ '$scope', '$element', function($scope, $element) {
+
+		} ],
+		link : function(scope, element, attrs) {
 			$('img').on('dragstart', function(event) {
 				event.preventDefault();
 			});
 
-			var lastTop = $cookieStore.get('lastTop');
-			var lastLeft = $cookieStore.get('lastLeft');
+			var lastTop = $cookies['lastTop'];
+			var lastLeft = $cookies['lastLeft'];
 
-			$(window).on('beforeunload', function() {
-				var position = $($element).position();
-				$cookieStore.put('lastTop', position.top);
-				$cookieStore.put('lastLeft', position.left);
-			});
-
-			$($element).css({
+			$(element).css({
 				'z-index' : 0,
 				'position' : 'fixed',
-				'top' : lastTop,
-				'left' : lastLeft,
+				'top' : parseFloat(lastTop),
+				'left' : parseFloat(lastLeft),
 				'cursor' : 'pointer'
 			});
-			var mc = new Hammer.Manager($element[0]);
+			var mc = new Hammer.Manager(element[0]);
 			mc.add(new Hammer.Pan({
 				direction : Hammer.DIRECTION_ALL
 			}));
@@ -34,14 +31,14 @@ draggableModule.directive('draggable', [ '$cookieStore', '$rootScope', function(
 			var limitTop = $(window).height() - 50;
 			var limitLeft = $(window).width() - 50;
 			mc.on('panstart', function(ev) {
-				var position = $($element).position();
+				var position = $(element).position();
 				limitTop = $(window).height() - 50;
 				limitLeft = $(window).width() - 50;
 				startTop = position.top;
 				startLeft = position.left;
 			});
 			mc.on('panmove', function(ev) {
-				$($element).css({
+				$(element).css({
 					'cursor' : 'move'
 				});
 				var offsetTop = startTop + ev.deltaY;
@@ -50,13 +47,13 @@ draggableModule.directive('draggable', [ '$cookieStore', '$rootScope', function(
 				offsetLeft = offsetLeft < 0 ? 0 : offsetLeft;
 				offsetTop = offsetTop > limitTop ? limitTop : offsetTop;
 				offsetLeft = offsetLeft > limitLeft ? limitLeft : offsetLeft;
-				$($element).offset({
+				$(element).offset({
 					top : offsetTop,
 					left : offsetLeft
 				});
 			});
 			mc.on('panend', function(ev) {
-				$($element).css({
+				$(element).css({
 					'cursor' : 'pointer'
 				});
 				var targetTop = startTop + ev.deltaY - (ev.velocityY * 150);
@@ -65,16 +62,19 @@ draggableModule.directive('draggable', [ '$cookieStore', '$rootScope', function(
 				targetLeft = targetLeft < 0 ? 0 : targetLeft;
 				targetTop = targetTop > limitTop ? limitTop : targetTop;
 				targetLeft = targetLeft > limitLeft ? limitLeft : targetLeft;
-				$($element).animate({
+				$(element).animate({
 					top : targetTop,
 					left : targetLeft
 				}, '500', 'easeOutCirc');
+				$cookies['lastTop'] = targetTop;
+				$cookies['lastLeft'] = targetLeft;
+				scope.$apply();
 			});
 			var isMenuShow = false;
 			mc.on('tap', function() {
 				isMenuShow = !isMenuShow;
 				$rootScope.$broadcast('menuSwitch', isMenuShow);
 			});
-		} ]
+		}
 	};
 } ]);

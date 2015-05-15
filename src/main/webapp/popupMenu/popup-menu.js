@@ -1,14 +1,41 @@
 var popupMenuModule = angular.module('sp.popupMenu', [ 'ngAnimate' ]);
 
+var MenuInstance = function() {
+	var self = this;
+	var instance = [];
+
+	self.addItem = function(template, onckick) {
+		instance.push({
+			'temp' : template,
+			'onclick' : onckick
+		});
+	};
+
+	self.addSubMenu = function(template, menuName, menu) {
+		instance.push({
+			'temp' : template,
+			'name' : menuName,
+			'sub' : menu
+		});
+	};
+
+	self.getInstance = function() {
+		return instance;
+	};
+};
+
 popupMenuModule.provider('menu', [ function() {
 	var menuInstanceMap = {};
-	this.addMenu = function(name, items) {
-		menuInstanceMap[name] = items;
-	};
 	this.$get = [ function() {
 		return {
 			get : function(name) {
 				return menuInstanceMap[name];
+			},
+			createMenu : function() {
+				return new MenuInstance();
+			},
+			addMenu : function(name, menu) {
+				menuInstanceMap[name] = menu;
 			}
 		};
 	} ];
@@ -48,60 +75,78 @@ popupMenuModule.factory('menuPositionCalculator', [ function() {
 	};
 } ]);
 
-popupMenuModule.directive('popupMenu', [ '$compile', '$animate', 'menu', 'menuPositionCalculator', 'eventChannelService', function($compile, $animate, menu, menuPositionCalculator, eventChannelService) {
+popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', 'menuPositionCalculator', function($compile, $q, $animate, menu, menuPositionCalculator) {
 	return {
 		controller : [ '$scope', function($scope) {
-			var eventTerminal = eventChannelService.createTerminal($scope);
-			$scope.testClick = function(name) {
-				console.log(name + ' click!');
-				eventTerminal.broadcast('changeLayout', 'la_' + name, 'fade');
+			$scope.buildMenu = function(menu) {
+				var deferred = $q.defer();
+				var menuElement = $compile('<div></div>')($scope);
+				$(menuElement).css({
+					'opacity' : 0
+				});
+				$(menuElement).hide();
+				var menuBgTemplate = '<div></div>';
+				var menuBgElement = $compile(menuBgTemplate)($scope);
+				$(menuBgElement).css({
+					'z-index' : -1,
+					'top' : -45,
+					'left' : -45,
+					'height' : 140,
+					'width' : 140,
+					'background-color' : 'gray',
+					'position' : 'absolute',
+					'border-radius' : '70px',
+					'-moz-border-radius' : '70px',
+					'-webkit-border-radius' : '70px',
+					'opacity' : 0.5
+				});
+				$(menuElement).append(menuBgElement);
+
+				var menuItems = menu.getInstance();
+				menuPositionCalculator.setCenterOffset(25, 25);
+				menuPositionCalculator.setItemOffset(5, 9);
+				var itemsPos = menuPositionCalculator.circlePositions(50, menuItems.length, -30);
+				angular.forEach(menuItems, function(menuItem, index) {
+					var itemTemplate = menuItem.temp;
+					var itemElement = $compile(itemTemplate)($scope);
+					$(itemElement).click(menuItem.onclick);
+					$(itemElement).css({
+						'z-index' : 10,
+						'position' : 'absolute',
+						'left' : itemsPos[index][0],
+						'top' : itemsPos[index][1]
+					});
+					$(menuElement).append(itemElement);
+				});
+				deferred.resolve(menuElement); // TODO subMenuList
+				// deferred.reject(reason);
+				return deferred.promise;
 			};
+
 		} ],
 		link : function(scope, element, attrs) {
-			$(element).css({
-				'opacity' : 0
-			});
-			$(element).hide();
-			var menuBgTemplate = '<div></div>';
-			var menuBgElement = $compile(menuBgTemplate)(scope);
-			$(menuBgElement).css({
-				'z-index' : -1,
-				'top' : -45,
-				'left' : -45,
-				'height' : 140,
-				'width' : 140,
-				'background-color' : 'gray',
-				'position' : 'absolute',
-				'border-radius' : '70px',
-				'-moz-border-radius' : '70px',
-				'-webkit-border-radius' : '70px',
-				'opacity' : 0.5
-			});
-			$(element).append(menuBgElement);
+			var buildSubMenu = function(parentMenuElement, subMenuList) {
+				// TODO parentMenuElement 倒退要用
+				// TODO forEach subMenuList
+				// TODO scope.buildMenu(eachSubMenu) 
+				// TODO then append to element and recursive build sub menus
+			};
 			var menuName = attrs.popupMenu;
-			var menuItems = menu.get(menuName);
-			menuPositionCalculator.setCenterOffset(25, 25);
-			menuPositionCalculator.setItemOffset(5, 9);
-			var itemsPos = menuPositionCalculator.circlePositions(50, menuItems.length, -30);
-			angular.forEach(menuItems, function(menuItem, index) {
-				var itemTemplate = '<a ng-click="testClick(\'' + menuItem.text + '\')" href="#">' + menuItem.text + '</a>';
-				var itemElement = $compile(itemTemplate)(scope);
-				$(itemElement).css({
-					'z-index' : 10,
-					'position' : 'absolute',
-					'left' : itemsPos[index][0],
-					'top' : itemsPos[index][1]
-				});
-				$(element).append(itemElement);
+			var mainMenu = menu.get(menuName);
+			var mainMenuElement = null;
+			scope.buildMenu(mainMenu).then(function(menuElement) {
+				// TODO get subMenuList and call buildSubMenu
+				mainMenuElement = menuElement;
+				$(element).append(mainMenuElement);
 			});
 
 			scope.$on('menuSwitch', function(e, isShow) {
 				if (isShow) {
-					$(element).show();
-					$animate.addClass(element, 'menu-show');
+					$(mainMenuElement).show();
+					$animate.addClass(mainMenuElement, 'menu-show');
 				} else {
-					$animate.removeClass(element, 'menu-show', function() {
-						$(element).hide();
+					$animate.removeClass(mainMenuElement, 'menu-show', function() {
+						$(mainMenuElement).hide();
 					});
 				}
 			});

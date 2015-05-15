@@ -29,53 +29,65 @@
 
 .menu-show-add {
 	opacity: 0 !important;
-	-webkit-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	-moz-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	-o-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-webkit-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
 }
 
 .menu-show-add.menu-show-add-active {
 	opacity: 1 !important;
-	-webkit-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	-moz-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	-o-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-webkit-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
 }
 
 .menu-show-remove {
 	opacity: 1 !important;
-	-webkit-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	-moz-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	-o-transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
-	transform: scale(1, 1) translate(0px,-55px) rotate(0deg);
+	-webkit-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
+	transform: scale(1, 1) translate(0px, -55px) rotate(0deg);
 }
 
 .menu-show-remove.menu-show-remove-active {
 	opacity: 0 !important;
-	-webkit-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	-moz-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	-o-transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
-	transform: scale(0.5, 0.5) translate(0px,-55px) rotate(60deg);
+	-webkit-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px, -55px) rotate(60deg);
 }
 </style>
 <script type="text/javascript">
-	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu' ]);
+	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu', 'ngCookies' ]);
 
 	app.config([ 'menuProvider', function(menuProvider) {
-		menuProvider.addMenu('menu1', [ {
-			text : 'A'
-		}, {
-			text : 'B'
-		}, {
-			text : 'C'
-		}, {
-			text : 'D'
-		}, {
-			text : 'E'
-		}, {
-			text : 'F'
-		} ]);
+	} ]);
+
+	app.controller('menuCtrl', [ '$scope', 'menu', 'eventChannelService', function($scope, menu, eventChannelService) {
+		var eventTerminal = eventChannelService.createTerminal($scope);
+		var popMenu = menu.createMenu();
+		popMenu.addItem('<a href="#">A</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_A', 'fade');
+		});
+		popMenu.addItem('<a href="#">B</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_B', 'fade');
+		});
+		popMenu.addItem('<a href="#">C</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_C', 'fade');
+		});
+		popMenu.addItem('<a href="#">D</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_D', 'fade');
+		});
+		popMenu.addItem('<a href="#">E</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_E', 'fade');
+		});
+		popMenu.addItem('<a href="#">F</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_F', 'fade');
+		});
+
+		menu.addMenu('menu1', popMenu);
 	} ]);
 
 	app.controller('testCtrl', [ '$scope', 'eventChannelService', function($scope, eventChannelService) {
@@ -98,12 +110,12 @@
 	} ]);
 </script>
 </head>
-<body ng-app="app"  sp-controller="testCtrl">
+<body ng-app="app" sp-controller="testCtrl">
 	<div sp-container="Root" root="true" content-url="[{w:700,l:'sm.html',name:'Layout_sm'},{l:'lg.html',name:'Layout_lg'}]"></div>
 	<!-- popup menu -->
 	<div draggable sp-event-channel="{A:['*'],B:['*']}">
 		<img alt="" src="../popupMenu/cis_circle.png" style="width: 50px;">
-		<div popup-menu="menu1"></div>
+		<div popup-menu="menu1" ng-controller="menuCtrl"></div>
 	</div>
 </body>
 </html>
