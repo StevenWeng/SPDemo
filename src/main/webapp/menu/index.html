@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="../js/jquery.easing.min.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-cookies.js"></script>
+<script src="../js/math.js"></script>
+<script src="http://cdn.jsdelivr.net/hammerjs/2.0.4/hammer.js"></script>
+<script src="https://code.angularjs.org/1.2.28/angular-animate.js"></script>
+<script src="../popupMenu/draggable.js"></script>
+<script src="../popupMenu/popup-menu.js"></script>
+<link rel="stylesheet" href="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/css/gesture-animate.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="menu.css" />
+<script src="http://demopush.megatime.com.tw/cdn/angular-spider/0.1.1-SNAPSHOT/js/angular-spider.js"></script>
+<title>Layout Test</title>
+
+<script type="text/javascript">
+	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu', 'ngCookies' ]);
+	
+	app.controller('menuCtrl', [ '$scope', 'menu', 'eventChannelService', function($scope, menu, eventChannelService) {
+		var eventTerminal = eventChannelService.createTerminal($scope);
+		var popMenu = menu.createMenu();
+		popMenu.addItem('<a style="font-size: 24px;" href="#">A</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_A', 'fade');
+		});
+		popMenu.addItem('<a style="font-size: 24px;" href="#">B</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_B', 'fade');
+		});
+		popMenu.addItem('<a style="font-size: 24px;" href="#">C</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_C', 'fade');
+		});
+		popMenu.addItem('<a style="font-size: 24px;" href="#">D</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_D', 'fade');
+		});
+		popMenu.addItem('<a style="font-size: 24px;" href="#">I2</a>', function() {
+			location.href = 'index2.html';
+		});
+
+		var subMenu = menu.createMenu();
+		subMenu.addItem('<a style="font-size: 24px;" href="#">E</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_E', 'fade');
+		});
+		subMenu.addItem('<a style="font-size: 24px;" href="#">F</a>', function() {
+			eventTerminal.broadcast('changeLayout', 'la_F', 'fade');
+		});
+
+		popMenu.addSubMenu('<span style="font-size: 24px;" class="glyphicon glyphicon-option-horizontal"></span>', 'sub1', subMenu);
+
+		menu.addMenu('menu1', popMenu);
+	} ]);
+</script>
+</head>
+<body ng-app="app">
+	<div sp-container="Root" root="true" content-url="lg.html"></div>
+	<!-- popup menu -->
+	<div draggable sp-event-channel="{A:['*'],B:['*']}">
+		<img menu-icon alt="" src="../popupMenu/cis_circle.png" style="width: 50px;">
+		<div popup-menu="menu1" ng-controller="menuCtrl"></div>
+	</div>
+</body>
+</html>

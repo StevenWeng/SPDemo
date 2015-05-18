@@ -70,10 +70,8 @@ draggableModule.directive('draggable', [ '$cookies', '$rootScope', function($coo
 				$cookies['lastLeft'] = targetLeft;
 				scope.$apply();
 			});
-			var isMenuShow = false;
 			mc.on('tap', function() {
-				isMenuShow = !isMenuShow;
-				$rootScope.$broadcast('menuSwitch', isMenuShow);
+				$rootScope.$broadcast('menuSwitch', true);
 			});
 		}
 	};

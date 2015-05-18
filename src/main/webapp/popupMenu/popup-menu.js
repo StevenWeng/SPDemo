@@ -15,7 +15,8 @@ var MenuInstance = function() {
 		instance.push({
 			'temp' : template,
 			'name' : menuName,
-			'sub' : menu
+			'menu' : menu,
+			'isSubMenu' : true
 		});
 	};
 
@@ -75,41 +76,72 @@ popupMenuModule.factory('menuPositionCalculator', [ function() {
 	};
 } ]);
 
+popupMenuModule.directive('menuIcon', [ function() {
+	return {
+		controller : [ '$element', function($element) {
+			$($element).css({
+				'opacity' : 0
+			});
+			$($element).addClass('icon-show');
+			this.getIconElement = function() {
+				return $element;
+			};
+		} ]
+	};
+} ]);
+
 popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', 'menuPositionCalculator', function($compile, $q, $animate, menu, menuPositionCalculator) {
 	return {
 		controller : [ '$scope', function($scope) {
-			$scope.buildMenu = function(menu) {
+			$scope.buildMenu = function(menu, onMenuBack) {
 				var deferred = $q.defer();
 				var menuElement = $compile('<div></div>')($scope);
 				$(menuElement).css({
-					'opacity' : 0
+					'opacity' : 0,
+					'height': 0
 				});
 				$(menuElement).hide();
 				var menuBgTemplate = '<div></div>';
 				var menuBgElement = $compile(menuBgTemplate)($scope);
 				$(menuBgElement).css({
 					'z-index' : -1,
-					'top' : -45,
-					'left' : -45,
-					'height' : 140,
-					'width' : 140,
+					'top' : -55,
+					'left' : -55,
+					'height' : 160,
+					'width' : 160,
 					'background-color' : 'gray',
 					'position' : 'absolute',
-					'border-radius' : '70px',
-					'-moz-border-radius' : '70px',
-					'-webkit-border-radius' : '70px',
+					'border-radius' : '80px',
+					'-moz-border-radius' : '80px',
+					'-webkit-border-radius' : '80px',
 					'opacity' : 0.5
 				});
 				$(menuElement).append(menuBgElement);
 
+				var backBtn = $compile('<span class="glyphicon glyphicon-arrow-left"></span>')($scope);
+				$(backBtn).css({
+					'top' : 17,
+					'left' : 17
+				});
+				$(backBtn).click(function() {
+					onMenuBack.call(this);
+				});
+				$(menuElement).append(backBtn);
+
+				var subMenuItemMap = {};
 				var menuItems = menu.getInstance();
 				menuPositionCalculator.setCenterOffset(25, 25);
-				menuPositionCalculator.setItemOffset(5, 9);
+				menuPositionCalculator.setItemOffset(9, 17);
 				var itemsPos = menuPositionCalculator.circlePositions(50, menuItems.length, -30);
 				angular.forEach(menuItems, function(menuItem, index) {
 					var itemTemplate = menuItem.temp;
 					var itemElement = $compile(itemTemplate)($scope);
-					$(itemElement).click(menuItem.onclick);
+					if (menuItem.isSubMenu === true) {
+						menuItem.element = itemElement;
+						subMenuItemMap[menuItem.name] = menuItem;
+					} else {
+						$(itemElement).click(menuItem.onclick);
+					}
 					$(itemElement).css({
 						'z-index' : 10,
 						'position' : 'absolute',
@@ -118,35 +150,68 @@ popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', '
 					});
 					$(menuElement).append(itemElement);
 				});
-				deferred.resolve(menuElement); // TODO subMenuList
+				deferred.resolve({
+					'menuElement' : menuElement,
+					'subMenuItemMap' : subMenuItemMap
+				});
 				// deferred.reject(reason);
 				return deferred.promise;
 			};
 
 		} ],
 		link : function(scope, element, attrs) {
-			var buildSubMenu = function(parentMenuElement, subMenuList) {
-				// TODO parentMenuElement 倒退要用
-				// TODO forEach subMenuList
-				// TODO scope.buildMenu(eachSubMenu) 
-				// TODO then append to element and recursive build sub menus
+			var buildSubMenu = function(parentMenuElement, subMenuItemMap) {
+				angular.forEach(subMenuItemMap, function(subMenuItem, name) {
+					var subMenuElement = null;
+					var onSubMenuBack = function() {
+						$(parentMenuElement).show();
+						$animate.addClass(parentMenuElement, 'sub-menu-show');
+						$animate.removeClass(subMenuElement, 'sub-menu-show', function() {
+							$(subMenuElement).hide();
+						});
+					};
+					scope.buildMenu(subMenuItem.menu, onSubMenuBack).then(function(resule) {
+						subMenuElement = resule.menuElement;
+						$(subMenuItem.element).click(function() {
+							$(subMenuElement).show();
+							$animate.addClass(subMenuElement, 'sub-menu-show');
+							$animate.removeClass(parentMenuElement, 'sub-menu-show', function() {
+								$(parentMenuElement).hide();
+							});
+						});
+						$(element).append(resule.menuElement);
+						buildSubMenu(resule.menuElement, resule.subMenuItemMap);
+					});
+				});
 			};
 			var menuName = attrs.popupMenu;
 			var mainMenu = menu.get(menuName);
 			var mainMenuElement = null;
-			scope.buildMenu(mainMenu).then(function(menuElement) {
-				// TODO get subMenuList and call buildSubMenu
-				mainMenuElement = menuElement;
+			var onMainMenuBack = function() {
+				scope.$broadcast('menuSwitch', false);
+			};
+			scope.buildMenu(mainMenu, onMainMenuBack).then(function(resule) {
+				buildSubMenu(resule.menuElement, resule.subMenuItemMap);
+				mainMenuElement = resule.menuElement;
 				$(element).append(mainMenuElement);
 			});
 
-			scope.$on('menuSwitch', function(e, isShow) {
-				if (isShow) {
+			var iconElement = $('img[menu-icon]');
+			var isMenuShow = false;
+			scope.$on('menuSwitch', function(e, show) {
+				if (show && !isMenuShow) {
+					$animate.removeClass(iconElement, 'icon-show', function() {
+						$(iconElement).hide();
+						isMenuShow = true;
+					});
 					$(mainMenuElement).show();
 					$animate.addClass(mainMenuElement, 'menu-show');
-				} else {
+				} else if (!show && isMenuShow) {
+					$(iconElement).show();
+					$animate.addClass(iconElement, 'icon-show');
 					$animate.removeClass(mainMenuElement, 'menu-show', function() {
 						$(mainMenuElement).hide();
+						isMenuShow = false;
 					});
 				}
 			});

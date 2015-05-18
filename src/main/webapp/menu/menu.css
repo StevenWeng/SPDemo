@@ -1,0 +1,115 @@
+.menu-show {
+	opacity: 1 !important;
+}
+
+.menu-show-add,.menu-show-remove,.icon-show-add,.icon-show-remove,.sub-menu-show-add,.sub-menu-show-remove
+	{
+	-webkit-transition: all 0.5s;
+	-moz-transition: all 0.5s;
+	-o-transition: all 0.5s;
+	transition: all 0.5s;
+}
+
+.menu-show-add {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+}
+
+.menu-show-add.menu-show-add-active {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+}
+
+.menu-show-remove {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	-moz-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	-o-transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+	transform: scale(1, 1) translate(0px, -50px) rotate(0deg);
+}
+
+.menu-show-remove.menu-show-remove-active {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+	transform: scale(0.5, 0.5) translate(0px, -50px) rotate(60deg);
+}
+
+.sub-menu-show {
+	opacity: 1 !important;
+}
+
+.sub-menu-show-add {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) rotate(60deg);
+	transform: scale(0.5, 0.5) rotate(60deg);
+}
+
+.sub-menu-show-add.sub-menu-show-add-active {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) rotate(0deg);
+	-moz-transform: scale(1, 1) rotate(0deg);
+	-o-transform: scale(1, 1) rotate(0deg);
+	transform: scale(1, 1) rotate(0deg);
+}
+
+.sub-menu-show-remove {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) rotate(0deg);
+	-moz-transform: scale(1, 1) rotate(0deg);
+	-o-transform: scale(1, 1) rotate(0deg);
+	transform: scale(1, 1) rotate(0deg);
+}
+
+.sub-menu-show-remove.sub-menu-show-remove-active {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) rotate(60deg);
+	transform: scale(0.5, 0.5) rotate(60deg);
+}
+
+.icon-show {
+	opacity: 1 !important;
+}
+
+.icon-show-add {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) rotate(60deg);
+	transform: scale(0.5, 0.5) rotate(60deg);
+}
+
+.icon-show-add.icon-show-add-active {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) rotate(0deg);
+	-moz-transform: scale(1, 1) rotate(0deg);
+	-o-transform: scale(1, 1) rotate(0deg);
+	transform: scale(1, 1) rotate(0deg);
+}
+
+.icon-show-remove {
+	opacity: 1 !important;
+	-webkit-transform: scale(1, 1) rotate(0deg);
+	-moz-transform: scale(1, 1) rotate(0deg);
+	-o-transform: scale(1, 1) rotate(0deg);
+	transform: scale(1, 1) rotate(0deg);
+}
+
+.icon-show-remove.icon-show-remove-active {
+	opacity: 0 !important;
+	-webkit-transform: scale(0.5, 0.5) rotate(60deg);
+	-moz-transform: scale(0.5, 0.5) rotate(60deg);
+	-o-transform: scale(0.5, 0.5) rotate(60deg);
+	transform: scale(0.5, 0.5) rotate(60deg);
+}
