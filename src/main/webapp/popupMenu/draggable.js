@@ -1,10 +1,17 @@
-var draggableModule = angular.module('draggable', [ 'ngCookies' ]);
+var draggableModule = angular.module('draggable', [ 'ngCookies', 'popupMenu' ]);
 
+/**
+ * @ngdoc directive
+ * @name draggable.directive:draggable
+ * @description
+ * 套用此 tag 之 menu ，可透過滑鼠拖拉移動 menu 。
+ */
 draggableModule.directive('draggable', [ '$cookies', '$rootScope', 'menuPositionCalculator', function($cookies, $rootScope, menuPositionCalculator) {
 	return {
 		scope : true,
 		link : function(scope, element, attrs) {
 			$('img').on('dragstart', function(event) {
+				// 阻斷瀏覽器對 img 的拖拉事件
 				event.preventDefault();
 			});
 

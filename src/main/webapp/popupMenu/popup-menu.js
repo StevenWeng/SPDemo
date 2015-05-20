@@ -1,9 +1,33 @@
 var popupMenuModule = angular.module('popupMenu', [ 'ngAnimate' ]);
 
+/**
+ * @ngdoc object
+ * @name popupMenu.object:MenuInstance
+ * @description
+ * 選單資料結構實體。
+ * 
+ * 可透過 `menu.createMenu()` 取得。
+ */
 var MenuInstance = function() {
 	var self = this;
 	var instance = [];
 
+	/**
+	 * @ngdoc function
+	 * @name addItem
+	 * @methodOf popupMenu.object:MenuInstance
+	 * @param {string} template item 按鈕的 html
+	 * @param {function} onckick item onclick callback
+	 * @description
+	 * 增加選單 Item 。
+	 * 
+	 * <pre>
+	 *	var popMenu = menu.createMenu();
+	 *	popMenu.addItem('<a style="font-size: 24px;" href="#">index2</a>', function() {
+	 *		location.href = 'index2.html';
+	 *	});
+	 * </pre>
+	 */
 	self.addItem = function(template, onckick) {
 		instance.push({
 			'temp' : template,
@@ -11,6 +35,25 @@ var MenuInstance = function() {
 		});
 	};
 
+	/**
+	 * @ngdoc function
+	 * @name addSubMenu
+	 * @methodOf popupMenu.object:MenuInstance
+	 * @param {string} template 子選單按鈕的 html
+	 * @param {string} menuName 子選單按鈕的名稱
+	 * @param {MenuInstance} menu 子選單按鈕的實體
+	 * @description
+	 * 增加子選單。
+	 * 
+	 * <pre>
+	 *	var popMenu = menu.createMenu();
+	 *	var subMenu = menu.createMenu();
+	 *	subMenu.addItem('<a style="font-size: 24px;" href="#">index2</a>', function() {
+	 *		location.href = 'index2.html';
+	 *	});
+	 *	popMenu.addSubMenu('<span style="font-size: 24px;" class="glyphicon glyphicon-option-horizontal"></span>', 'sub1', subMenu);
+	 * </pre>
+	 */
 	self.addSubMenu = function(template, menuName, menu) {
 		instance.push({
 			'temp' : template,
@@ -25,6 +68,12 @@ var MenuInstance = function() {
 	};
 };
 
+/**
+ * @ngdoc service
+ * @name popupMenu.service:menuPositionCalculatorProvider
+ * @description
+ * 設定選單之幾何位置參數。
+ */
 popupMenuModule.provider('menuPositionCalculator', [ function() {
 	var itemOffsetX = 0;
 	var itemOffsetY = 0;
@@ -33,22 +82,79 @@ popupMenuModule.provider('menuPositionCalculator', [ function() {
 	var radius = 50;
 	var angle = 0;
 
+	/**
+	 * @ngdoc function
+	 * @name setItemOffset
+	 * @methodOf popupMenu.service:menuPositionCalculatorProvider
+	 * @param {number} x item offset x
+	 * @param {number} y item offset y
+	 * @description
+	 * 繪製 menu item 時的座標偏移量
+	 * 
+	 * 簡單來說 x 就是 item 的寬除以2， y 就是 item 的高除以 2 。 
+	 */
 	this.setItemOffset = function(x, y) {
 		itemOffsetX = x;
 		itemOffsetY = y;
 	};
+
+	/**
+	 * @ngdoc function
+	 * @name setCenterOffset
+	 * @methodOf popupMenu.service:menuPositionCalculatorProvider
+	 * @param {number} x center offset x
+	 * @param {number} y center offset y
+	 * @description
+	 * 繪製 menu icon 時的座標偏移量
+	 * 
+	 * 簡單來說 x 就是 menu icon 的寬除以2， y 就是 menu icon 的高除以 2 。 
+	 */
 	this.setCenterOffset = function(x, y) {
 		centerOffsetX = x;
 		centerOffsetY = y;
 	};
+
+	/**
+	 * @ngdoc function
+	 * @name setRadius
+	 * @methodOf popupMenu.service:menuPositionCalculatorProvider
+	 * @param {number} r 選單半徑
+	 * @description
+	 * Item 中心到選單中心的距離。
+	 */
 	this.setRadius = function(r) {
 		radius = r;
 	};
+
+	/**
+	 * @ngdoc function
+	 * @name setAngle
+	 * @methodOf popupMenu.service:menuPositionCalculatorProvider
+	 * @param {number} a 選單偏移角度
+	 * @description
+	 * Menu item 的偏移角度。
+	 */
 	this.setAngle = function(a) {
 		angle = a;
 	};
+
+	/**
+	 * @ngdoc service
+	 * @name popupMenu.service:menuPositionCalculator
+	 * @description
+	 * 取得選單之幾何位置參數。
+	 */
 	this.$get = [ function() {
 		return {
+			/**
+			 * @ngdoc function
+			 * @name circlePositions
+			 * @methodOf popupMenu.service:menuPositionCalculator
+			 * @param {number} count 座標組的數量
+			 * @return {Array} 環狀座標組陣列
+			 * @description
+			 * 計算環狀選單的 item 座標，產出的座標已經算過 offset 可以直接使用。
+			 */
 			circlePositions : function(count) {
 				var eachAngle = 360.0 / count;
 				var positions = [];
@@ -63,13 +169,37 @@ popupMenuModule.provider('menuPositionCalculator', [ function() {
 				}
 				return positions;
 			},
+			/**
+			 * @ngdoc function
+			 * @name getCircleMenuRadius
+			 * @methodOf popupMenu.service:menuPositionCalculator
+			 * @return {number} 環狀選單半徑
+			 * @description
+			 * 計算環狀半徑，含 item 的寬高。
+			 */
 			getCircleMenuRadius : function() {
 				var circleMenuRadius = radius + Math.sqrt(Math.pow(itemOffsetX, 2) + Math.pow(itemOffsetY, 2));
 				return circleMenuRadius;
 			},
+			/**
+			 * @ngdoc function
+			 * @name getCenterOffsetX
+			 * @methodOf popupMenu.service:menuPositionCalculator
+			 * @return {number} center offset x
+			 * @description
+			 * 取得 menu icon 的 x 偏移量。
+			 */
 			getCenterOffsetX : function() {
 				return centerOffsetX;
 			},
+			/**
+			 * @ngdoc function
+			 * @name getCenterOffsetY
+			 * @methodOf popupMenu.service:menuPositionCalculator
+			 * @return {number} center offset y
+			 * @description
+			 * 取得 menu icon 的 y 偏移量。
+			 */
 			getCenterOffsetY : function() {
 				return centerOffsetY;
 			}
@@ -79,14 +209,46 @@ popupMenuModule.provider('menuPositionCalculator', [ function() {
 
 popupMenuModule.provider('menu', [ function() {
 	var menuInstanceMap = {};
+	/**
+	 * @ngdoc service
+	 * @name popupMenu.service:menu
+	 * @description
+	 * 選單的操作服務。
+	 */
 	this.$get = [ function() {
 		return {
+			/**
+			 * @ngdoc function
+			 * @name get
+			 * @methodOf popupMenu.service:menu
+			 * @param {string} name menu name
+			 * @return {MenuInstance} 選單實體
+			 * @description
+			 * 取得 {@link popupMenu.object:MenuInstance MenuInstance} 選單實體。
+			 */
 			get : function(name) {
 				return menuInstanceMap[name];
 			},
+			/**
+			 * @ngdoc function
+			 * @name createMenu
+			 * @methodOf popupMenu.service:menu
+			 * @return {MenuInstance} 選單實體
+			 * @description
+			 * 建立新的 {@link popupMenu.object:MenuInstance MenuInstance} 選單實體。
+			 */
 			createMenu : function() {
 				return new MenuInstance();
 			},
+			/**
+			 * @ngdoc function
+			 * @name addMenu
+			 * @methodOf popupMenu.service:menu
+			 * @param {string} name menu name
+			 * @param {MenuInstance} menu 選單實體
+			 * @description
+			 * 加入 {@link popupMenu.object:MenuInstance MenuInstance} 選單實體。
+			 */
 			addMenu : function(name, menu) {
 				menuInstanceMap[name] = menu;
 			}
@@ -108,6 +270,23 @@ popupMenuModule.directive('menuIcon', [ function() {
 	};
 } ]);
 
+/**
+ * @ngdoc directive
+ * @name popupMenu.directive:popupMenu
+ * @param {string} popup-menu menu name
+ * @description
+ * 
+ * 設定此 tag ，就會依照 {@link popupMenu.service:menu menu} 中的設定，畫出選單。
+ * 
+ * 例如:
+ * <pre>
+ *	<div draggable>
+ *		<img menu-icon src="../popupMenu/cis_circle.png" style="width: 50px;">
+ *		<div popup-menu="menu1"></div>
+ *	</div>
+ * </pre>
+ * 
+ */
 popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', 'menuPositionCalculator', function($compile, $q, $animate, menu, menuPositionCalculator) {
 	return {
 		controller : [ '$scope', function($scope) {
@@ -210,6 +389,7 @@ popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', '
 				scope.$broadcast('menuSwitch', false);
 			};
 			scope.buildMenu(mainMenu, onMainMenuBack).then(function(resule) {
+				// 遞迴建立子選單
 				buildSubMenu(resule.menuElement, resule.subMenuItemMap);
 				mainMenuElement = resule.menuElement;
 				$(element).append(mainMenuElement);
