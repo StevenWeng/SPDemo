@@ -1,4 +1,4 @@
-var popupMenuModule = angular.module('sp.popupMenu', [ 'ngAnimate' ]);
+var popupMenuModule = angular.module('popupMenu', [ 'ngAnimate' ]);
 
 var MenuInstance = function() {
 	var self = this;
@@ -25,6 +25,58 @@ var MenuInstance = function() {
 	};
 };
 
+popupMenuModule.provider('menuPositionCalculator', [ function() {
+	var itemOffsetX = 0;
+	var itemOffsetY = 0;
+	var centerOffsetX = 0;
+	var centerOffsetY = 0;
+	var radius = 50;
+	var angle = 0;
+
+	this.setItemOffset = function(x, y) {
+		itemOffsetX = x;
+		itemOffsetY = y;
+	};
+	this.setCenterOffset = function(x, y) {
+		centerOffsetX = x;
+		centerOffsetY = y;
+	};
+	this.setRadius = function(r) {
+		radius = r;
+	};
+	this.setAngle = function(a) {
+		angle = a;
+	};
+	this.$get = [ function() {
+		return {
+			circlePositions : function(count) {
+				var eachAngle = 360.0 / count;
+				var positions = [];
+				var startPos = [ radius, 0 ];
+				for (var i = 0; i < count; i++) {
+					var thisAngle = (eachAngle * i) + angle;
+					var radian = thisAngle * (Math.PI / 180.0);
+					var m = math.matrix([ [ Math.cos(radian), -Math.sin(radian) ], [ Math.sin(radian), Math.cos(radian) ] ]);
+					var pos = math.multiply(m, startPos);
+					pos = math.add(pos, [ centerOffsetX - itemOffsetX, centerOffsetY - itemOffsetY ]);
+					positions.push(pos._data);
+				}
+				return positions;
+			},
+			getCircleMenuRadius : function() {
+				var circleMenuRadius = radius + Math.sqrt(Math.pow(itemOffsetX, 2) + Math.pow(itemOffsetY, 2));
+				return circleMenuRadius;
+			},
+			getCenterOffsetX : function() {
+				return centerOffsetX;
+			},
+			getCenterOffsetY : function() {
+				return centerOffsetY;
+			}
+		};
+	} ];
+} ]);
+
 popupMenuModule.provider('menu', [ function() {
 	var menuInstanceMap = {};
 	this.$get = [ function() {
@@ -40,40 +92,6 @@ popupMenuModule.provider('menu', [ function() {
 			}
 		};
 	} ];
-} ]);
-
-popupMenuModule.factory('menuPositionCalculator', [ function() {
-	var itemOffsetX = 0;
-	var itemOffsetY = 0;
-	var centerOffsetX = 0;
-	var centerOffsetY = 0;
-	return {
-		setItemOffset : function(x, y) {
-			itemOffsetX = x;
-			itemOffsetY = y;
-		},
-		setCenterOffset : function(x, y) {
-			centerOffsetX = x;
-			centerOffsetY = y;
-		},
-		circlePositions : function(r, count, startAngle) {
-			if (typeof (startAngle) == "undefined") {
-				startAngle = 0;
-			}
-			var eachAngle = 360.0 / count;
-			var positions = [];
-			var startPos = [ r, 0 ];
-			for (var i = 0; i < count; i++) {
-				var angle = (eachAngle * i) + startAngle;
-				var radian = angle * (Math.PI / 180.0);
-				var m = math.matrix([ [ Math.cos(radian), -Math.sin(radian) ], [ Math.sin(radian), Math.cos(radian) ] ]);
-				var pos = math.multiply(m, startPos);
-				pos = math.add(pos, [ centerOffsetX - itemOffsetX, centerOffsetY - itemOffsetY ]);
-				positions.push(pos._data);
-			}
-			return positions;
-		}
-	};
 } ]);
 
 popupMenuModule.directive('menuIcon', [ function() {
@@ -98,30 +116,33 @@ popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', '
 				var menuElement = $compile('<div></div>')($scope);
 				$(menuElement).css({
 					'opacity' : 0,
-					'height': 0
+					'height' : 0
 				});
 				$(menuElement).hide();
 				var menuBgTemplate = '<div></div>';
 				var menuBgElement = $compile(menuBgTemplate)($scope);
+				var menuRadius = menuPositionCalculator.getCircleMenuRadius() + 10;
+				var menuCenterOffsetX = menuPositionCalculator.getCenterOffsetX();
+				var menuCenterOffsetY = menuPositionCalculator.getCenterOffsetY();
 				$(menuBgElement).css({
 					'z-index' : -1,
-					'top' : -55,
-					'left' : -55,
-					'height' : 160,
-					'width' : 160,
+					'top' : menuCenterOffsetY - menuRadius,
+					'left' : menuCenterOffsetX - menuRadius,
+					'height' : menuRadius * 2,
+					'width' : menuRadius * 2,
 					'background-color' : 'gray',
 					'position' : 'absolute',
-					'border-radius' : '80px',
-					'-moz-border-radius' : '80px',
-					'-webkit-border-radius' : '80px',
+					'border-radius' : menuRadius,
+					'-moz-border-radius' : menuRadius,
+					'-webkit-border-radius' : menuRadius,
 					'opacity' : 0.5
 				});
 				$(menuElement).append(menuBgElement);
 
 				var backBtn = $compile('<span class="glyphicon glyphicon-arrow-left"></span>')($scope);
 				$(backBtn).css({
-					'top' : 17,
-					'left' : 17
+					'top' : menuCenterOffsetY - 8,
+					'left' : menuCenterOffsetX - 7
 				});
 				$(backBtn).click(function() {
 					onMenuBack.call(this);
@@ -130,9 +151,7 @@ popupMenuModule.directive('popupMenu', [ '$compile', '$q', '$animate', 'menu', '
 
 				var subMenuItemMap = {};
 				var menuItems = menu.getInstance();
-				menuPositionCalculator.setCenterOffset(25, 25);
-				menuPositionCalculator.setItemOffset(9, 17);
-				var itemsPos = menuPositionCalculator.circlePositions(50, menuItems.length, -30);
+				var itemsPos = menuPositionCalculator.circlePositions(menuItems.length);
 				angular.forEach(menuItems, function(menuItem, index) {
 					var itemTemplate = menuItem.temp;
 					var itemElement = $compile(itemTemplate)($scope);

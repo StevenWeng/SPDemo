@@ -19,8 +19,15 @@
 <title>Layout Test</title>
 
 <script type="text/javascript">
-	var app = angular.module('app', [ 'spider', 'ngAnimate', 'sp.draggable', 'sp.popupMenu', 'ngCookies' ]);
-	
+	var app = angular.module('app', [ 'spider', 'ngAnimate', 'draggable', 'popupMenu', 'ngCookies' ]);
+
+	app.config([ 'menuPositionCalculatorProvider', function(menuPositionCalculatorProvider) {
+		menuPositionCalculatorProvider.setItemOffset(9, 17);
+		menuPositionCalculatorProvider.setCenterOffset(25, 25);
+		menuPositionCalculatorProvider.setRadius(50);
+		menuPositionCalculatorProvider.setAngle(-30);
+	} ]);
+
 	app.controller('menuCtrl', [ '$scope', 'menu', 'eventChannelService', function($scope, menu, eventChannelService) {
 		var eventTerminal = eventChannelService.createTerminal($scope);
 		var popMenu = menu.createMenu();

@@ -1,11 +1,8 @@
-var draggableModule = angular.module('sp.draggable', [ 'ngCookies' ]);
+var draggableModule = angular.module('draggable', [ 'ngCookies' ]);
 
-draggableModule.directive('draggable', [ '$cookies', '$rootScope', function($cookies, $rootScope) {
+draggableModule.directive('draggable', [ '$cookies', '$rootScope', 'menuPositionCalculator', function($cookies, $rootScope, menuPositionCalculator) {
 	return {
 		scope : true,
-		controller : [ '$scope', '$element', function($scope, $element) {
-
-		} ],
 		link : function(scope, element, attrs) {
 			$('img').on('dragstart', function(event) {
 				event.preventDefault();
@@ -28,12 +25,12 @@ draggableModule.directive('draggable', [ '$cookies', '$rootScope', function($coo
 			mc.add(new Hammer.Tap());
 			var startTop = 0;
 			var startLeft = 0;
-			var limitTop = $(window).height() - 50;
-			var limitLeft = $(window).width() - 50;
+			var limitTop = $(window).height() - (menuPositionCalculator.getCenterOffsetY() * 2);
+			var limitLeft = $(window).width() - (menuPositionCalculator.getCenterOffsetX() * 2);
 			mc.on('panstart', function(ev) {
 				var position = $(element).position();
-				limitTop = $(window).height() - 50;
-				limitLeft = $(window).width() - 50;
+				limitTop = $(window).height() - (menuPositionCalculator.getCenterOffsetY() * 2);
+				limitLeft = $(window).width() - (menuPositionCalculator.getCenterOffsetX() * 2);
 				startTop = position.top;
 				startLeft = position.left;
 			});
